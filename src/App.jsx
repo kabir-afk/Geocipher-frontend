@@ -9,16 +9,16 @@ function App() {
   return (
     <APIProvider apiKey={API_KEY}>
       {/* You can render EITHER Map or StreetView, or both in split-screen */}
-      <div style={{ display: "flex", height: "100vh" }}>
-        <div style={{ flex: 1 }}>
+      <div className="h-full">
+        <div className="h-80 w-4/10 absolute z-10 bottom-0 right-0 hover:h-100 hover:w-1/2">
           <Map
             defaultCenter={position}
             defaultZoom={14}
-            mapId="DEMO_MAP_ID"
-            style={{ height: "100%", width: "100%" }}
+            mapId="MAP_ID"
+            disableDefaultUI
           />
         </div>
-        <div style={{ flex: 1 }}>
+        <div className="fixed h-full w-full">
           <StreetView position={position} />
         </div>
       </div>
