@@ -5,6 +5,7 @@ import {
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 import { StreetView } from "./components/StreetView";
+import { Polyline } from "./components/Polyline";
 import { useEffect, useState } from "react";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -23,7 +24,11 @@ function App() {
 
     // do something with marker instance here
   }, [marker]);
-
+  const lineSymbol = {
+    path: "M 0,-1 0,1",
+    strokeOpacity: 1,
+    scale: 2,
+  };
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="h-full">
@@ -52,6 +57,20 @@ function App() {
                   ref={markerRef}
                   position={markerPosition}
                   className={visibility}
+                />
+                <Polyline
+                  path={[position, markerPosition]}
+                  geodesic={true}
+                  strokeOpacity={0}
+                  strokeWeight={2}
+                  strokeColor={"#FF0000"}
+                  icons={[
+                    {
+                      icon: lineSymbol,
+                      offset: "0",
+                      repeat: "10px",
+                    },
+                  ]}
                 />
               </>
             )}
