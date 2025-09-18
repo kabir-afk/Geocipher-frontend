@@ -12,9 +12,10 @@ import { Distance } from "./components/Distance";
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function App() {
-  const position = { lat: 48.8566, lng: 2.3522 };
+  // const position = { lat: 48.8566, lng: 2.3522 };
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
-  const [markerPosition, setMarkerPosition] = useState(position);
+  const [randomPosition, setRandomPosition] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState(null);
   const [visibility, setVisibility] = useState(false);
   const [markerRef] = useAdvancedMarkerRef();
 
@@ -22,6 +23,9 @@ function App() {
     path: "M 0,-1 0,1",
     strokeOpacity: 1,
     scale: 2,
+  };
+  const getPosition = (position) => {
+    setRandomPosition(position);
   };
   return (
     <APIProvider apiKey={API_KEY}>
@@ -44,7 +48,7 @@ function App() {
               <>
                 <AdvancedMarker
                   ref={markerRef}
-                  position={position}
+                  position={randomPosition}
                   className={visibility}
                 />
                 <AdvancedMarker
@@ -53,7 +57,7 @@ function App() {
                   className={visibility}
                 />
                 <Polyline
-                  path={[position, markerPosition]}
+                  path={[randomPosition, markerPosition]}
                   geodesic={true}
                   strokeOpacity={0}
                   strokeWeight={2}
@@ -70,9 +74,9 @@ function App() {
             )}
           </Map>
         </div>
-        {visibility && <Distance from={position} to={markerPosition} />}
+        {visibility && <Distance from={randomPosition} to={markerPosition} />}
         <div className="h-full w-full">
-          <StreetView position={position} />
+          <StreetView onDataSend={getPosition} />
         </div>
       </div>
     </APIProvider>
