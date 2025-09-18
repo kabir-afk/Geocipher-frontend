@@ -1,7 +1,7 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
 
-export function StreetView() {
+export function StreetView({ onDataSend }) {
   const [position, setPosition] = useState(null);
   const streetViewRef = useRef(null);
   const streetViewLibrary = useMapsLibrary("streetView");
@@ -27,6 +27,7 @@ export function StreetView() {
       (result, status) => {
         if (status === "OK") {
           setPosition(result.location.latLng);
+          onDataSend(result.location.latLng);
         } else {
           console.error("Street View not found. Trying again...");
           // Used RECURSION along with setTimeout to avoid a tight loop and potential performance issues
