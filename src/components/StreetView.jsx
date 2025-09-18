@@ -1,42 +1,62 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function StreetView() {
-  function getRndInteger(min, max) {
-    return (Math.random() * (max - min + 1) + min).toFixed(6);
-  }
-  let randomLat = parseFloat(getRndInteger(-85, 85));
-  let randomLng = parseFloat(getRndInteger(-180, 180));
-
-  let position = { lat: randomLat, lng: randomLng };
-  // console.log(position);
-
+  const [position, setPosition] = useState(null);
   const streetViewRef = useRef(null);
   const streetViewLibrary = useMapsLibrary("streetView");
 
-  function processSVData() {
-    new streetViewLibrary.StreetViewPanorama(streetViewRef.current, {
-      position,
-      pov: { heading: 34, pitch: 10 },
-    });
+  function getRandomCoordinates() {
+    const lat = Math.random() * 170 - 85; // to avoid poles
+    const lng = Math.random() * 360 - 180;
+    return { lat, lng };
   }
 
-  useEffect(() => {
+  const searchForStreetView = () => {
     if (!streetViewLibrary || !streetViewRef.current) return;
 
     const sv = new streetViewLibrary.StreetViewService();
-    let a = sv
-      .getPanorama({
-        location: { lat: position.lat, lng: position.lng },
-        radius: 50,
-      })
-      .then(processSVData)
-      .catch(() =>
-        console.error("Street View data not found for this location.")
-      );
-    console.log(a);
-    console.log(position);
-  });
+    const newPosition = getRandomCoordinates();
+    console.log(newPosition);
+
+    sv.getPanorama(
+      {
+        location: newPosition,
+        radius: 10000, // Increased radius to 10km for better success rate
+      },
+      (result, status) => {
+        if (status === "OK") {
+          setPosition(result.location.latLng);
+          console.log(
+            "Found Street View at:",
+            result.location.latLng.lat(),
+            result.location.latLng.lng()
+          );
+        } else {
+          console.log("Street View not found. Trying again...");
+          // Used RECURSION along with setTimeout to avoid a tight loop and potential performance issues
+          setTimeout(searchForStreetView, 50);
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (streetViewLibrary) {
+      searchForStreetView();
+    }
+  }, [streetViewLibrary]);
+
+  useEffect(() => {
+    if (!streetViewLibrary || !streetViewRef.current || !position) return;
+
+    new streetViewLibrary.StreetViewPanorama(streetViewRef.current, {
+      position: position,
+      pov: { heading: 34, pitch: 10 },
+      visible: true,
+      showRoadLabels: false,
+    });
+  }, [position, streetViewLibrary]);
 
   return <div ref={streetViewRef} style={{ height: "100vh", width: "100%" }} />;
 }
