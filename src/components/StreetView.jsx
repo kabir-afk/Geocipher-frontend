@@ -27,13 +27,8 @@ export function StreetView() {
       (result, status) => {
         if (status === "OK") {
           setPosition(result.location.latLng);
-          console.log(
-            "Found Street View at:",
-            result.location.latLng.lat(),
-            result.location.latLng.lng()
-          );
         } else {
-          console.log("Street View not found. Trying again...");
+          console.error("Street View not found. Trying again...");
           // Used RECURSION along with setTimeout to avoid a tight loop and potential performance issues
           setTimeout(searchForStreetView, 50);
         }
