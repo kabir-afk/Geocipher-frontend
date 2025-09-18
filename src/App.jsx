@@ -12,7 +12,6 @@ import { Distance } from "./components/Distance";
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function App() {
-  // const position = { lat: 48.8566, lng: 2.3522 };
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
@@ -74,7 +73,12 @@ function App() {
             )}
           </Map>
         </div>
-        {visibility && <Distance from={randomPosition} to={markerPosition} />}
+        {visibility && (
+          <Distance
+            from={{ lat: randomPosition.lat(), lng: randomPosition.lng() }}
+            to={markerPosition}
+          />
+        )}
         <div className="h-full w-full">
           <StreetView onDataSend={getPosition} />
         </div>
