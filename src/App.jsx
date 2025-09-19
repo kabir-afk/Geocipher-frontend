@@ -3,6 +3,7 @@ import {
   Map,
   AdvancedMarker,
   useAdvancedMarkerRef,
+  Pin,
 } from "@vis.gl/react-google-maps";
 import { StreetView } from "./components/StreetView";
 import { Polyline } from "./components/Polyline";
@@ -49,7 +50,9 @@ function App() {
                   ref={markerRef}
                   position={randomPosition}
                   className={visibility}
-                />
+                >
+                  <Pin background={"#000"} glyph={"🏳️"} borderColor={"#000"} />
+                </AdvancedMarker>
                 <AdvancedMarker
                   ref={markerRef}
                   position={markerPosition}
@@ -57,10 +60,9 @@ function App() {
                 />
                 <Polyline
                   path={[randomPosition, markerPosition]}
-                  geodesic={true}
                   strokeOpacity={0}
                   strokeWeight={2}
-                  strokeColor={"#FF0000"}
+                  strokeColor={"#000"}
                   icons={[
                     {
                       icon: lineSymbol,
