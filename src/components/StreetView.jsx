@@ -51,6 +51,7 @@ export function StreetView({ onDataSend }) {
       pov: { heading: 34, pitch: 10 },
       visible: true,
       showRoadLabels: false,
+      disableDefaultUI: true,
     });
   }, [position, streetViewLibrary]);
 
