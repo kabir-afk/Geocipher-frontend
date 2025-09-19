@@ -16,6 +16,7 @@ function App() {
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
+  const [cursor, setCursor] = useState("cursor-not-allowed");
   const [visibility, setVisibility] = useState(false);
   const [markerRef] = useAdvancedMarkerRef();
 
@@ -30,18 +31,18 @@ function App() {
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="h-full">
-        <div className="rounded-md overflow-hidden h-50 w-70 absolute z-10 bottom-0 right-0 mb-4 mr-16 transition duration-50 ease hover:w-90 hover:h-60">
+        <div className="rounded-md overflow-hidden h-50 w-70 absolute z-10 bottom-12 right-0 m-2 transition duration-50 ease hover:w-1/3 hover:h-1/2">
           <Map
             defaultCenter={defaultPosition}
             defaultZoom={2}
             mapId="MAP_ID"
             disableDefaultUI
             onClick={(e) => {
-              setVisibility(true);
               setMarkerPosition({
                 lat: e.detail.latLng.lat,
                 lng: e.detail.latLng.lng,
               });
+              setCursor("cursor-pointer");
             }}
           >
             {visibility && (
@@ -53,11 +54,7 @@ function App() {
                 >
                   <Pin background={"#000"} glyph={"🏳️"} borderColor={"#000"} />
                 </AdvancedMarker>
-                <AdvancedMarker
-                  ref={markerRef}
-                  position={markerPosition}
-                  className={visibility}
-                />
+
                 <Polyline
                   path={[randomPosition, markerPosition]}
                   strokeOpacity={0}
@@ -73,7 +70,25 @@ function App() {
                 />
               </>
             )}
+            <AdvancedMarker
+              ref={markerRef}
+              position={markerPosition}
+              className={visibility}
+            />
           </Map>
+        </div>
+        <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
+          <button
+            type="submit"
+            className={`w-full h-full ${cursor}`}
+            onClick={() => {
+              if (markerPosition !== null) {
+                setVisibility(true);
+              }
+            }}
+          >
+            Guess
+          </button>
         </div>
         {visibility && (
           <Distance
