@@ -18,28 +18,22 @@ function App() {
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState("cursor-not-allowed");
-  const [style, setStyle] = useState({
-    width: "70",
-    height: "50",
-    margin: "2",
-    hoverWidth: "hover:w-1/3",
-    hoverHeight: "hover:h-1/2",
-    bottom: "12",
-  });
+  const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
   const gameMarkerRef = useAdvancedMarkerRef();
   const userMarkerRef = useAdvancedMarkerRef();
+  const layoutClassMap = {
+    collapsed: "h-48 w-70 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
+    expanded: "h-full w-full bottom-0 m-0",
+  };
+
+  const containerClass =
+    layout === "expanded" ? layoutClassMap.expanded : layoutClassMap.collapsed;
+
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
-      setStyle({
-        width: "full",
-        height: "full",
-        margin: "0",
-        hoverWidth: "none",
-        hoverHeight: "none",
-        bottom: "0",
-      });
+      setLayout("expanded");
     }
   }
 
@@ -55,7 +49,7 @@ function App() {
     <APIProvider apiKey={API_KEY}>
       <div className="h-full">
         <div
-          className={`rounded-md overflow-hidden h-${style.height} w-${style.width} absolute z-10 bottom-${style.bottom} right-0 m-${style.margin} transition duration-50 ease ${style.hoverWidth} ${style.hoverHeight}`}
+          className={`rounded-md overflow-hidden absolute z-10 right-0 transition duration-50 ease ${containerClass}`}
         >
           <Map
             defaultCenter={defaultPosition}
