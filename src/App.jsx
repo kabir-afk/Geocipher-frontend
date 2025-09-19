@@ -27,7 +27,8 @@ function App() {
     bottom: "12",
   });
   const [visibility, setVisibility] = useState(false);
-  const [markerRef] = useAdvancedMarkerRef();
+  const gameMarkerRef = useAdvancedMarkerRef();
+  const userMarkerRef = useAdvancedMarkerRef();
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
@@ -72,7 +73,7 @@ function App() {
             {visibility && (
               <>
                 <AdvancedMarker
-                  ref={markerRef}
+                  ref={gameMarkerRef}
                   position={randomPosition}
                   className={visibility}
                 >
@@ -94,11 +95,7 @@ function App() {
                 />
               </>
             )}
-            <AdvancedMarker
-              ref={markerRef}
-              position={markerPosition}
-              className={visibility}
-            />
+            <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
           </Map>
         </div>
         <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
