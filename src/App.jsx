@@ -9,6 +9,7 @@ import { StreetView } from "./components/StreetView";
 import { Polyline } from "./components/Polyline";
 import { useState } from "react";
 import { Distance } from "./components/Distance";
+import { PanToButton } from "./components/PanToButton";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -17,8 +18,29 @@ function App() {
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState("cursor-not-allowed");
+  const [style, setStyle] = useState({
+    width: "70",
+    height: "50",
+    margin: "2",
+    hoverWidth: "hover:w-1/3",
+    hoverHeight: "hover:h-1/2",
+    bottom: "12",
+  });
   const [visibility, setVisibility] = useState(false);
   const [markerRef] = useAdvancedMarkerRef();
+  function stateChange() {
+    if (markerPosition !== null) {
+      setVisibility(true);
+      setStyle({
+        width: "full",
+        height: "full",
+        margin: "0",
+        hoverWidth: "none",
+        hoverHeight: "none",
+        bottom: "0",
+      });
+    }
+  }
 
   const lineSymbol = {
     path: "M 0,-1 0,1",
@@ -31,7 +53,9 @@ function App() {
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="h-full">
-        <div className="rounded-md overflow-hidden h-50 w-70 absolute z-10 bottom-12 right-0 m-2 transition duration-50 ease hover:w-1/3 hover:h-1/2">
+        <div
+          className={`rounded-md overflow-hidden h-${style.height} w-${style.width} absolute z-10 bottom-${style.bottom} right-0 m-${style.margin} transition duration-50 ease ${style.hoverWidth} ${style.hoverHeight}`}
+        >
           <Map
             defaultCenter={defaultPosition}
             defaultZoom={2}
@@ -78,17 +102,11 @@ function App() {
           </Map>
         </div>
         <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
-          <button
-            type="submit"
-            className={`w-full h-full ${cursor}`}
-            onClick={() => {
-              if (markerPosition !== null) {
-                setVisibility(true);
-              }
-            }}
-          >
-            Guess
-          </button>
+          <PanToButton
+            position={randomPosition}
+            stateChange={stateChange}
+            cursor={cursor}
+          />
         </div>
         {visibility && (
           <Distance
