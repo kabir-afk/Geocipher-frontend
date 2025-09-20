@@ -71,11 +71,7 @@ function App() {
           >
             {visibility && (
               <>
-                <AdvancedMarker
-                  ref={gameMarkerRef}
-                  position={randomPosition}
-                  className={visibility}
-                >
+                <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
                   <Pin background={"#000"} glyph={"🏳️"} borderColor={"#000"} />
                 </AdvancedMarker>
 
