@@ -12,6 +12,7 @@ import { Distance } from "./components/Distance";
 import { GuessButton } from "./components/GuessButton";
 import { NextButton } from "./components/NextButton";
 import { Round } from "./components/Round";
+import { Timer } from "./components/Timer";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -22,6 +23,7 @@ function App() {
   const [cursor, setCursor] = useState(true);
   const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
+  const [timerState, setTimerState] = useState(true);
   const [round, setRound] = useState(1);
   const gameMarkerRef = useAdvancedMarkerRef();
   const userMarkerRef = useAdvancedMarkerRef();
@@ -37,6 +39,7 @@ function App() {
     if (markerPosition !== null) {
       setVisibility(true);
       setLayout("expanded");
+      setTimerState(false);
     }
   }
 
@@ -92,7 +95,7 @@ function App() {
             <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
           </Map>
         </div>
-        <div className="absolute z-10 right-1 bottom-4 py-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
+        <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
           {visibility === false ? (
             <GuessButton
               position={randomPosition}
@@ -110,6 +113,7 @@ function App() {
                 setMarkerPosition(null);
                 setRandomPosition(null);
                 setCursor(true);
+                setTimerState(true);
               }}
             />
           )}
@@ -120,9 +124,10 @@ function App() {
               from={{ lat: randomPosition.lat(), lng: randomPosition.lng() }}
               to={markerPosition}
             />
-            <Round round={round} />
           </div>
         )}
+        <Timer timerState={timerState} />
+        <Round round={round} />
         <div className="h-full w-full">
           <StreetView key={round} onDataSend={getPosition} />
         </div>
