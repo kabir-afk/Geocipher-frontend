@@ -23,6 +23,7 @@ export function StreetView({ onDataSend }) {
       {
         location: newPosition,
         radius: 10000, // Increased radius to 10km for better success rate
+        preference: streetViewLibrary.StreetViewPreference.NEAREST,
       },
       (result, status) => {
         if (status === "OK") {
@@ -45,13 +46,21 @@ export function StreetView({ onDataSend }) {
 
   useEffect(() => {
     if (!streetViewLibrary || !streetViewRef.current || !position) return;
-
     new streetViewLibrary.StreetViewPanorama(streetViewRef.current, {
       position: position,
       pov: { heading: 34, pitch: 10 },
       visible: true,
       showRoadLabels: false,
       disableDefaultUI: true,
+      rotateControl: true,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: window.google.maps.ControlPosition.LEFT_BOTTOM,
+      },
+      panControl: true,
+      panControlOptions: {
+        position: window.google.maps.ControlPosition.LEFT_BOTTOM,
+      },
     });
   }, [position, streetViewLibrary]);
 
