@@ -19,7 +19,6 @@ function App() {
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState(true);
-  const [cursorStyle, setCursorStyle] = useState("cursor-not-allowed");
   const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
   const [round, setRound] = useState(1);
@@ -66,7 +65,6 @@ function App() {
                 lng: e.detail.latLng.lng,
               });
               setCursor(false);
-              setCursorStyle("cursor-pointer");
             }}
           >
             {visibility && (
@@ -99,10 +97,11 @@ function App() {
               position={randomPosition}
               stateChange={stateChange}
               cursor={cursor}
-              cursorStyle={cursorStyle}
+              cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
             />
           ) : (
             <NextButton
+              cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
               setLayout={() => {
                 setRound((roundNum) => roundNum + 1);
                 setLayout("collapsed");
@@ -110,7 +109,6 @@ function App() {
                 setMarkerPosition(null);
                 setRandomPosition(null);
                 setCursor(true);
-                setCursorStyle("cursor-not-allowed");
               }}
             />
           )}
