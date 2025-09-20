@@ -9,7 +9,7 @@ import { StreetView } from "./components/StreetView";
 import { Polyline } from "./components/Polyline";
 import { useState } from "react";
 import { Distance } from "./components/Distance";
-import { PanToButton } from "./components/PanToButton";
+import { GuessButton } from "./components/GuessButton";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -95,7 +95,7 @@ function App() {
           </Map>
         </div>
         <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
-          <PanToButton
+          <GuessButton
             position={randomPosition}
             stateChange={stateChange}
             cursor={cursor}
