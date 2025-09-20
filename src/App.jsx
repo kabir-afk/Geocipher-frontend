@@ -10,6 +10,7 @@ import { Polyline } from "./components/Polyline";
 import { useState } from "react";
 import { Distance } from "./components/Distance";
 import { GuessButton } from "./components/GuessButton";
+import { NextButton } from "./components/NextButton";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -21,6 +22,7 @@ function App() {
   const [cursorStyle, setCursorStyle] = useState("cursor-not-allowed");
   const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
+  const [round, setRound] = useState(1);
   const gameMarkerRef = useAdvancedMarkerRef();
   const userMarkerRef = useAdvancedMarkerRef();
   const layoutClassMap = {
@@ -53,6 +55,7 @@ function App() {
           className={`rounded-md overflow-hidden absolute z-10 right-0 transition duration-50 ease ${containerClass}`}
         >
           <Map
+            key={round}
             defaultCenter={defaultPosition}
             defaultZoom={2}
             mapId="MAP_ID"
@@ -95,12 +98,26 @@ function App() {
           </Map>
         </div>
         <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
-          <GuessButton
-            position={randomPosition}
-            stateChange={stateChange}
-            cursor={cursor}
-            cursorStyle={cursorStyle}
-          />
+          {visibility === false ? (
+            <GuessButton
+              position={randomPosition}
+              stateChange={stateChange}
+              cursor={cursor}
+              cursorStyle={cursorStyle}
+            />
+          ) : (
+            <NextButton
+              setLayout={() => {
+                setRound((roundNum) => roundNum + 1);
+                setLayout("collapsed");
+                setVisibility(false);
+                setMarkerPosition(null);
+                setRandomPosition(null);
+                setCursor(true);
+                setCursorStyle("cursor-not-allowed");
+              }}
+            />
+          )}
         </div>
         {visibility && (
           <Distance
@@ -109,7 +126,7 @@ function App() {
           />
         )}
         <div className="h-full w-full">
-          <StreetView onDataSend={getPosition} />
+          <StreetView key={round} onDataSend={getPosition} />
         </div>
       </div>
     </APIProvider>
