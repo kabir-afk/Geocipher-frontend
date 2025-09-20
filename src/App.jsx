@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Distance } from "./components/Distance";
 import { GuessButton } from "./components/GuessButton";
 import { NextButton } from "./components/NextButton";
+import { Round } from "./components/Round";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -49,7 +50,7 @@ function App() {
   };
   return (
     <APIProvider apiKey={API_KEY}>
-      <div className="h-full">
+      <div className="h-full font-overpass font-bold">
         <div
           className={`rounded-md overflow-hidden absolute z-10 right-0 transition duration-50 ease ${containerClass}`}
         >
@@ -114,10 +115,13 @@ function App() {
           )}
         </div>
         {visibility && (
-          <Distance
-            from={{ lat: randomPosition.lat(), lng: randomPosition.lng() }}
-            to={markerPosition}
-          />
+          <div>
+            <Distance
+              from={{ lat: randomPosition.lat(), lng: randomPosition.lng() }}
+              to={markerPosition}
+            />
+            <Round round={round} />
+          </div>
         )}
         <div className="h-full w-full">
           <StreetView key={round} onDataSend={getPosition} />
