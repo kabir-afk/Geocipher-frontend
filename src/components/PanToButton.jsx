@@ -1,6 +1,6 @@
 import { useMap } from "@vis.gl/react-google-maps";
 
-export function PanToButton({ position, stateChange, cursor }) {
+export function PanToButton({ position, stateChange, cursor, cursorStyle }) {
   const map = useMap();
   function zoomOutAndIn(event) {
     event.preventDefault();
@@ -33,7 +33,8 @@ export function PanToButton({ position, stateChange, cursor }) {
   return (
     <button
       type="submit"
-      className={`w-full h-full ${cursor}`}
+      disabled={cursor}
+      className={`w-full h-full ${cursorStyle}`}
       onClick={panToPosition}
     >
       GUESS

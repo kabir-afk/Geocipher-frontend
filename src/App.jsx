@@ -17,7 +17,8 @@ function App() {
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
-  const [cursor, setCursor] = useState("cursor-not-allowed");
+  const [cursor, setCursor] = useState(true);
+  const [cursorStyle, setCursorStyle] = useState("cursor-not-allowed");
   const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
   const gameMarkerRef = useAdvancedMarkerRef();
@@ -61,7 +62,8 @@ function App() {
                 lat: e.detail.latLng.lat,
                 lng: e.detail.latLng.lng,
               });
-              setCursor("cursor-pointer");
+              setCursor(false);
+              setCursorStyle("cursor-pointer");
             }}
           >
             {visibility && (
@@ -97,6 +99,7 @@ function App() {
             position={randomPosition}
             stateChange={stateChange}
             cursor={cursor}
+            cursorStyle={cursorStyle}
           />
         </div>
         {visibility && (
