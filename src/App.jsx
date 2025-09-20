@@ -64,10 +64,12 @@ function App() {
             mapId="MAP_ID"
             disableDefaultUI
             onClick={(e) => {
-              setMarkerPosition({
-                lat: e.detail.latLng.lat,
-                lng: e.detail.latLng.lng,
-              });
+              visibility
+                ? e.preventDefault()
+                : setMarkerPosition({
+                    lat: e.detail.latLng.lat,
+                    lng: e.detail.latLng.lng,
+                  });
               setCursor(false);
             }}
           >
