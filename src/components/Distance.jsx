@@ -16,7 +16,7 @@ export function Distance({ from, to }) {
   }, [geometryLibrary, from, to]);
 
   return (
-    <div className="absolute z-10 w-70 h-20 bg-yellow-200">
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-70 bg-purple-600 text-white py-2 rounded-2xl text-center">
       {distance >= 1000
         ? `${Math.round(distance / 1000)} kilometres`
         : `${Math.round(distance)} meters`}

@@ -92,7 +92,7 @@ function App() {
             <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
           </Map>
         </div>
-        <div className="absolute z-10 right-0 bottom-0 h-10 m-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
+        <div className="absolute z-10 right-1 bottom-4 py-2 w-70 rounded-md text-center bg-gray-500 text-amber-50 ">
           {visibility === false ? (
             <GuessButton
               position={randomPosition}
