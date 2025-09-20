@@ -4,8 +4,8 @@ export function GuessButton({ position, stateChange, cursor, cursorStyle }) {
   const map = useMap();
   function zoomOutAndIn(event) {
     event.preventDefault();
-    let minZoom = 1;
-    let maxZoom = 14;
+    let minZoom = 3;
+    let maxZoom = 8;
     // Step 1: Zoom out to minZoom
     function zoomOutStep() {
       if (map.getZoom() > minZoom) {

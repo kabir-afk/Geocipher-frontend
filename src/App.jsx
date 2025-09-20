@@ -55,7 +55,7 @@ function App() {
     <APIProvider apiKey={API_KEY}>
       <div className="h-full font-overpass font-bold">
         <div
-          className={`rounded-md overflow-hidden absolute z-10 right-0 transition duration-50 ease ${containerClass}`}
+          className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
         >
           <Map
             key={round}

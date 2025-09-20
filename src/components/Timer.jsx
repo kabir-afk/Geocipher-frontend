@@ -30,7 +30,7 @@ export function Timer({ timerState }) {
   }, [isRunning, timerState, timeLeft]);
 
   return (
-    <div className="absolute z-10 top-0 left-1/2 transform -translate-x-1/2 bg-yellow-500 p-2">
+    <div className="w-25 text-center absolute z-10 top-5 left-1/2 transform -translate-x-1/2 bg-transparent backdrop-blur-3xl p-2 text-white border-4 border-purple-600 rounded-3xl">
       {formatTime(timeLeft)}
     </div>
   );
