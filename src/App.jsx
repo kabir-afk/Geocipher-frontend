@@ -13,6 +13,7 @@ import { GuessButton } from "./components/GuessButton";
 import { NextButton } from "./components/NextButton";
 import { Round } from "./components/Round";
 import { Timer } from "./components/Timer";
+import { ShimmerDiv } from "shimmer-effects-react";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -23,7 +24,7 @@ function App() {
   const [cursor, setCursor] = useState(true);
   const [layout, setLayout] = useState("collapsed");
   const [visibility, setVisibility] = useState(false);
-  const [timerState, setTimerState] = useState(true);
+  const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
   const gameMarkerRef = useAdvancedMarkerRef();
   const userMarkerRef = useAdvancedMarkerRef();
@@ -50,6 +51,7 @@ function App() {
   };
   const getPosition = (position) => {
     setRandomPosition(position);
+    setTimerState(true);
   };
   return (
     <APIProvider apiKey={API_KEY}>
@@ -131,6 +133,16 @@ function App() {
         <Timer timerState={timerState} />
         <Round round={round} />
         <div className="h-full w-full">
+          {!timerState ? (
+            <ShimmerDiv
+              mode="dark"
+              height="100vh"
+              width="100vw"
+              loading={true}
+            />
+          ) : (
+            ""
+          )}
           <StreetView key={round} onDataSend={getPosition} />
         </div>
       </div>
