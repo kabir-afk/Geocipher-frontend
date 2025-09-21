@@ -3,8 +3,17 @@ import { useEffect, useRef, useState } from "react";
 
 export function StreetView({ onDataSend }) {
   const [position, setPosition] = useState(null);
+  const [layout, setLayout] = useState(true);
   const streetViewRef = useRef(null);
   const streetViewLibrary = useMapsLibrary("streetView");
+
+  const svLayout = {
+    collapsed: "h-0 w-0",
+    expanded: "h-full w-full",
+  };
+
+  const layoutClassSv =
+    layout === "expanded" ? svLayout.expanded : svLayout.collapsed;
 
   function getRandomCoordinates() {
     const lat = Math.random() * 170 - 85; // to avoid poles
@@ -29,6 +38,7 @@ export function StreetView({ onDataSend }) {
         if (status === "OK") {
           setPosition(result.location.latLng);
           onDataSend(result.location.latLng);
+          setLayout(false);
         } else {
           console.error("Street View not found. Trying again...");
           // Used RECURSION along with setTimeout to avoid a tight loop and potential performance issues
@@ -64,5 +74,5 @@ export function StreetView({ onDataSend }) {
     });
   }, [position, streetViewLibrary]);
 
-  return <div ref={streetViewRef} style={{ height: "100vh", width: "100%" }} />;
+  return <div ref={streetViewRef} className={layoutClassSv} />;
 }
