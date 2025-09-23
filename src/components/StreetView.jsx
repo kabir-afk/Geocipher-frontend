@@ -1,4 +1,5 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
 export function StreetView({ onDataSend }) {
@@ -14,42 +15,27 @@ export function StreetView({ onDataSend }) {
 
   const layoutClassSv = layout ? svLayout.expanded : svLayout.collapsed;
 
-  function getRandomCoordinates() {
-    const lat = Math.random() * 170 - 85; // to avoid poles
-    const lng = Math.random() * 360 - 180;
-    return { lat, lng };
+  async function getRandomCoordinates() {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/v1/");
+      let randomPostion =
+        response.data.coordinates[
+          Math.floor(Math.random() * response.data.coordinates.length - 1)
+        ];
+      randomPostion = { lat: +randomPostion.lat, lng: +randomPostion.lng };
+      console.log(randomPostion);
+
+      setPosition(randomPostion);
+      onDataSend(randomPostion);
+      setLayout(true);
+    } catch (error) {
+      console.error("Some error", error);
+    }
   }
-
-  const searchForStreetView = () => {
-    if (!streetViewLibrary || !streetViewRef.current) return;
-
-    const sv = new streetViewLibrary.StreetViewService();
-    const newPosition = getRandomCoordinates();
-    console.log(newPosition);
-
-    sv.getPanorama(
-      {
-        location: newPosition,
-        radius: 10000, // Increased radius to 10km for better success rate
-        preference: streetViewLibrary.StreetViewPreference.NEAREST,
-      },
-      (result, status) => {
-        if (status === "OK") {
-          setPosition(result.location.latLng);
-          onDataSend(result.location.latLng);
-          setLayout(true);
-        } else {
-          console.error("Street View not found. Trying again...");
-          // Used RECURSION along with setTimeout to avoid a tight loop and potential performance issues
-          setTimeout(searchForStreetView, 50);
-        }
-      }
-    );
-  };
 
   useEffect(() => {
     if (streetViewLibrary) {
-      searchForStreetView();
+      getRandomCoordinates();
     }
   }, [streetViewLibrary]);
 
