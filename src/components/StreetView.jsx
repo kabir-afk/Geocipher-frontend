@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 export function StreetView({ position }) {
   const [layout, setLayout] = useState(false);
   const streetViewRef = useRef(null);
+  const panoramaRef = useRef(null);
   const streetViewLibrary = useMapsLibrary("streetView");
 
   const svLayout = {
@@ -12,10 +13,8 @@ export function StreetView({ position }) {
   };
 
   const layoutClassSv = layout ? svLayout.expanded : svLayout.collapsed;
-  const panoramaRef = useRef(null);
   useEffect(() => {
     if (!streetViewLibrary || !streetViewRef.current || !position) return;
-    setLayout(true);
     if (!panoramaRef.current) {
       panoramaRef.current = new streetViewLibrary.StreetViewPanorama(
         streetViewRef.current,
