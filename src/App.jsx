@@ -7,13 +7,14 @@ import {
 } from "@vis.gl/react-google-maps";
 import { StreetView } from "./components/StreetView";
 import { Polyline } from "./components/Polyline";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Distance } from "./components/Distance";
 import { GuessButton } from "./components/GuessButton";
 import { NextButton } from "./components/NextButton";
 import { Round } from "./components/Round";
 import { Timer } from "./components/Timer";
 import { ShimmerDiv } from "shimmer-effects-react";
+import axios from "axios";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -35,7 +36,25 @@ function App() {
 
   const containerClass =
     layout === "expanded" ? layoutClassMap.expanded : layoutClassMap.collapsed;
+  async function getRandomCoordinates() {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/v1/");
+      const coords = response.data.coordinates;
+      let randomPosition = coords[Math.floor(Math.random() * coords.length)];
+      randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
+      console.log(randomPosition);
+      return randomPosition;
+    } catch (error) {
+      console.error("Some error", error);
+    }
+  }
 
+  useEffect(() => {
+    getRandomCoordinates().then((position) => {
+      setRandomPosition(position);
+      setTimerState(true);
+    });
+  }, [round]);
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
@@ -49,8 +68,12 @@ function App() {
     strokeOpacity: 1,
     scale: 2,
   };
-  const getPosition = (position) => {
-    setRandomPosition(position);
+  const handleNextRound = () => {
+    setRound((roundNum) => roundNum + 1);
+    setLayout("collapsed");
+    setVisibility(false);
+    setMarkerPosition(null);
+    setCursor(true);
     setTimerState(true);
   };
   return (
@@ -110,15 +133,7 @@ function App() {
           ) : (
             <NextButton
               cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
-              setLayout={() => {
-                setRound((roundNum) => roundNum + 1);
-                setLayout("collapsed");
-                setVisibility(false);
-                setMarkerPosition(null);
-                setRandomPosition(null);
-                setCursor(true);
-                setTimerState(true);
-              }}
+              setLayout={handleNextRound}
             />
           )}
         </div>
@@ -143,7 +158,7 @@ function App() {
           ) : (
             ""
           )}
-          <StreetView key={round} onDataSend={getPosition} />
+          <StreetView position={randomPosition} />
         </div>
       </div>
     </APIProvider>
