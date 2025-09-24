@@ -19,7 +19,7 @@ export function Distance({ from, to }) {
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-fit bg-purple-600 text-white p-2 rounded-2xl text-center">
       Your guess was{" "}
       {distance >= 1000
-        ? `${Math.round(distance / 1000)} kilometres`
+        ? `${Math.round(distance / 1000)} KM`
         : `${Math.round(distance)} meters`}{" "}
       from the correct location
     </div>
