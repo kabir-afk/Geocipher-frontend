@@ -32,13 +32,12 @@ export function Distance({ from, to, round }) {
             },
           }
         );
-        console.log("Post created successfully:", response.data);
-        return response.data.score;
+        setScore(response.data.score);
       } catch (error) {
         console.error("Error creating post:", error.message);
       }
     }
-    fetchScore(from, to, round).then((score) => setScore(score));
+    fetchScore(from, to, round);
   }, [geometryLibrary, from, to, round]);
 
   return (
