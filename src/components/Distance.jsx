@@ -42,12 +42,18 @@ export function Distance({ from, to, round }) {
   }, [geometryLibrary, from, to, round]);
 
   return (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-fit bg-purple-600 text-white p-2 rounded-2xl text-center">
-      Your guess was{" "}
-      {distance >= 1000
-        ? `${Math.round(distance / 1000)} KM`
-        : `${Math.round(distance)} meters`}{" "}
-      from the correct location. Your Score is {score}
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-fit flex flex-col items-center justify-center">
+      <div className="w-fit bg-amber-300 text-black p-2 rounded-2xl">
+        {" "}
+        Your Score is {score}
+      </div>
+      <div className=" bg-purple-600 text-white mt-2 p-2 rounded-2xl">
+        Your guess was{" "}
+        {distance >= 1000
+          ? `${Math.round(distance / 1000)} KM`
+          : `${Math.round(distance)} meters`}{" "}
+        from the correct location.
+      </div>
     </div>
   );
 }
