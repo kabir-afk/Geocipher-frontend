@@ -20,6 +20,7 @@ const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function App() {
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
+  const [coords, setCoords] = useState([]);
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState(true);
@@ -37,25 +38,27 @@ function App() {
   const containerClass = layout
     ? layoutClassMap.expanded
     : layoutClassMap.collapsed;
-  async function getRandomCoordinates() {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/v1/");
-      const coords = response.data.coordinates;
+  useEffect(() => {
+    async function fetchCoordinates() {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/v1/");
+        setCoords(response.data.coordinates);
+      } catch (error) {
+        console.error("Some error", error);
+      }
+    }
+    fetchCoordinates();
+  }, []);
+  useEffect(() => {
+    if (coords.length > 0) {
       let randomPosition = coords[Math.floor(Math.random() * coords.length)];
       randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
       console.log(randomPosition);
-      return randomPosition;
-    } catch (error) {
-      console.error("Some error", error);
-    }
-  }
-
-  useEffect(() => {
-    getRandomCoordinates().then((position) => {
-      setRandomPosition(position);
+      setRandomPosition(randomPosition);
       setTimerState(true);
-    });
-  }, [round]);
+    }
+  }, [round, coords]);
+
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
