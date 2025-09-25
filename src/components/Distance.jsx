@@ -16,7 +16,7 @@ export function Distance({ from, to, round }) {
     );
     setDistance(dist);
     dist = Math.round(dist / 1000);
-    async function fetchScore(from, to) {
+    async function fetchScore(from, to, round) {
       try {
         const response = await axios.post(
           "http://127.0.0.1:8000/api/v1/score",
