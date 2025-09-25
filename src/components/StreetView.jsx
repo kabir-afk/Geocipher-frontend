@@ -1,18 +1,11 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export function StreetView({ position }) {
-  const [layout, setLayout] = useState(false);
   const streetViewRef = useRef(null);
   const panoramaRef = useRef(null);
   const streetViewLibrary = useMapsLibrary("streetView");
 
-  const svLayout = {
-    collapsed: { height: 0, width: 0 },
-    expanded: { height: "100vh", width: "100vw" },
-  };
-
-  const layoutClassSv = layout ? svLayout.expanded : svLayout.collapsed;
   useEffect(() => {
     if (!streetViewLibrary || !streetViewRef.current || !position) return;
     if (!panoramaRef.current) {
@@ -41,9 +34,10 @@ export function StreetView({ position }) {
   useEffect(() => {
     if (panoramaRef.current && position) {
       panoramaRef.current.setPosition(position);
-      setLayout(true);
     }
   }, [position]);
 
-  return <div ref={streetViewRef} style={layoutClassSv} />;
+  return (
+    <div ref={streetViewRef} style={{ height: "100vh", width: "100vw" }} />
+  );
 }
