@@ -140,6 +140,7 @@ function App() {
         {visibility && (
           <div>
             <Distance
+              round={round}
               from={{ lat: randomPosition.lat, lng: randomPosition.lng }}
               to={markerPosition}
             />
