@@ -23,7 +23,7 @@ function App() {
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState(true);
-  const [layout, setLayout] = useState("collapsed");
+  const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
@@ -34,8 +34,9 @@ function App() {
     expanded: "h-full w-full bottom-0 m-0",
   };
 
-  const containerClass =
-    layout === "expanded" ? layoutClassMap.expanded : layoutClassMap.collapsed;
+  const containerClass = layout
+    ? layoutClassMap.expanded
+    : layoutClassMap.collapsed;
   async function getRandomCoordinates() {
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/v1/");
@@ -58,7 +59,7 @@ function App() {
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
-      setLayout("expanded");
+      setLayout(true);
       setTimerState(false);
     }
   }
@@ -70,7 +71,7 @@ function App() {
   };
   const handleNextRound = () => {
     setRound((roundNum) => roundNum + 1);
-    setLayout("collapsed");
+    setLayout(false);
     setVisibility(false);
     setMarkerPosition(null);
     setCursor(true);
@@ -133,7 +134,7 @@ function App() {
           ) : (
             <NextButton
               cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
-              setLayout={handleNextRound}
+              setNextRoundLayout={handleNextRound}
             />
           )}
         </div>
@@ -157,9 +158,8 @@ function App() {
               loading={true}
             />
           ) : (
-            ""
+            <StreetView position={randomPosition} />
           )}
-          <StreetView position={randomPosition} />
         </div>
       </div>
     </APIProvider>
