@@ -27,8 +27,8 @@ function App() {
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
-  const [userMarkerRef, userMarker] = useAdvancedMarkerRef();
-  const [gameMarkerRef, gameMarker] = useAdvancedMarkerRef();
+  const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
+  const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
   const layoutClassMap = {
     collapsed: "h-48 w-70 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
