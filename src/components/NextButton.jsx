@@ -1,9 +1,9 @@
-export function NextButton({ setLayout }) {
+export function NextButton({ setNextRoundLayout }) {
   return (
     <button
       type="button"
       className={"w-full h-full cursor-pointer"}
-      onClick={setLayout}
+      onClick={setNextRoundLayout}
     >
       NEXT
     </button>
