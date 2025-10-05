@@ -15,6 +15,7 @@ import { Round } from "./components/Round";
 import { Timer } from "./components/Timer";
 import { ShimmerDiv } from "shimmer-effects-react";
 import axios from "axios";
+import Navbar from "./components/Navbar";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -52,8 +53,8 @@ function App() {
   useEffect(() => {
     if (coords.length > 0) {
       let randomPosition = coords[Math.floor(Math.random() * coords.length)];
+      // console.log(randomPosition);
       randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
-      console.log(randomPosition);
       setRandomPosition(randomPosition);
       setTimerState(true);
     }
@@ -150,6 +151,7 @@ function App() {
             />
           </div>
         )}
+        <Navbar />
         <Timer timerState={timerState} />
         <Round round={round} />
         <div className="h-full w-full">
