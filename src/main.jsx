@@ -3,13 +3,19 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
 import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { CookiesProvider } from "react-cookie";
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/single-player-mode",
@@ -21,7 +27,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <RouterProvider router={router} />
+      <CookiesProvider>
+        <RouterProvider router={router} />
+      </CookiesProvider>
     </GoogleOAuthProvider>
   </StrictMode>
 );
