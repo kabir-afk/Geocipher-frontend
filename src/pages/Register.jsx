@@ -12,13 +12,11 @@ const Register = () => {
   const handleRegistration = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/v1/auth/", {
+      await axios.post("http://127.0.0.1:8000/api/v1/auth/", {
         username,
         email,
         password,
       });
-      console.log(res);
-      // storing token inside cookie or localstorge
       navigate("/single-player-mode");
     } catch (error) {
       console.log(error);
@@ -69,12 +67,19 @@ const Register = () => {
           type="submit"
           className="bg-cinnabar text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
         >
-          Log in <i className="fa fa-fw fa-chevron-right"></i>
+          Register <i className="fa fa-fw fa-chevron-right"></i>
         </button>
       </form>
       {/* <div className="mt-5 rounded-md">
         <GoogleAuth />
       </div> */}
+      <button
+        type="submit"
+        onClick={() => navigate("/login")}
+        className="bg-cinnabar text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
+      >
+        Login <i className="fa fa-fw fa-chevron-right"></i>
+      </button>
       <button
         className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
         onClick={() => {
