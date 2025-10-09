@@ -3,4 +3,19 @@
 
 @theme {
   --font-overpass: "Overpass", sans-serif;
+  --color-onyx: #3e363f;
+  --color-cinnabar: #dd403a;
+  --color-cosmiclatte: #fffce8;
+}
+
+body {
+  /* background-image: url(https://unsplash.it/1400/799); */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: var(--color-onyx); */
+  color: var(--color-onyx);
+
+  height: 100vh;
+  overflow: hidden;
 }
