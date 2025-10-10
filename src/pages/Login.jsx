@@ -2,28 +2,26 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../components/GoogleAuth";
-import { useCookies } from "react-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, __setErrors] = useState({});
-  const [__cookies, setCookie] = useCookies(["token"]);
+  const [error, setError] = useState({});
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
+      await axios.post("http://127.0.0.1:8000/api/token/", {
         username,
         password,
       });
-      // storing token inside cookie
-      const accessToken = response.data.access;
-      setCookie("token", accessToken, { path: "/" });
-      console.log(response.data);
       navigate("/single-player-mode");
     } catch (error) {
-      console.error("Invalid credentials : ", error);
+      if (error.response && error.response.status === 401) {
+        setError("Invalid username or password.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     }
   };
   return (
@@ -37,11 +35,6 @@ const Login = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <small>
-          {errors.username && (
-            <div className="text-red-400">{errors.username}</div>
-          )}
-        </small>
         <input
           id="password"
           type="password"
@@ -50,17 +43,13 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <small>
-          {errors.password && (
-            <div className="text-red-400">{errors.password}</div>
-          )}
-        </small>
         <button
           type="submit"
           className="bg-cinnabar text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
         >
           Login <i className="fa fa-fw fa-chevron-right"></i>
         </button>
+        <small>{error && <div className="text-red-400">{error}</div>}</small>
       </form>
       {/* <div className="mt-5 rounded-md">
         <GoogleAuth />
