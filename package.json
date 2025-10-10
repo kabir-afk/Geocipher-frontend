@@ -15,7 +15,6 @@
     "@vis.gl/react-google-maps": "^1.5.5",
     "axios": "^1.12.2",
     "react": "^19.1.1",
-    "react-cookie": "^8.0.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.2",
     "shimmer-effects-react": "^1.0.4",

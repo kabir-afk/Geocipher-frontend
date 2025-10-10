@@ -5,7 +5,6 @@ import App from "./App.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { CookiesProvider } from "react-cookie";
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const router = createBrowserRouter([
@@ -27,9 +26,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <CookiesProvider>
-        <RouterProvider router={router} />
-      </CookiesProvider>
+      <RouterProvider router={router} />
     </GoogleOAuthProvider>
   </StrictMode>
 );
