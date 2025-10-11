@@ -6,6 +6,7 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./components/AuthContext";
+import Profile from "./pages/Profile.jsx";
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "/single-player-mode",
