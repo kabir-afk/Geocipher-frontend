@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import GoogleAuth from "../components/GoogleAuth";
+import { AuthContext } from "../components/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState({});
+  const [error, setError] = useState("");
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/token/", {
+      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
         username,
         password,
       });
+      if (response.data.access) {
+        login();
+      }
       navigate("/single-player-mode");
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -24,6 +29,7 @@ const Login = () => {
       }
     }
   };
+
   return (
     <div className="bg-onyx rounded-md p-5 w-1/5 absolute top-1/2 left-1/2 -translate-1/2">
       <form className="flex flex-col" onSubmit={handleLogin}>
@@ -51,9 +57,6 @@ const Login = () => {
         </button>
         <small>{error && <div className="text-red-400">{error}</div>}</small>
       </form>
-      {/* <div className="mt-5 rounded-md">
-        <GoogleAuth />
-      </div> */}
       <button
         className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
         onClick={() => {
@@ -61,14 +64,6 @@ const Login = () => {
         }}
       >
         Create an account
-      </button>
-      <button
-        className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
-        onClick={() => {
-          navigate("/single-player-mode");
-        }}
-      >
-        Skip for now
       </button>
     </div>
   );
