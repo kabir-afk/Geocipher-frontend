@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../components/GoogleAuth";
 import Navbar from "../components/Navbar";
+import { AuthContext } from "../components/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const { login } = useContext(AuthContext);
   const handleRegistration = async (e) => {
     e.preventDefault();
     try {
@@ -18,6 +20,7 @@ const Register = () => {
         email,
         password,
       });
+      login();
       navigate("/single-player-mode");
     } catch (error) {
       console.log(error);
