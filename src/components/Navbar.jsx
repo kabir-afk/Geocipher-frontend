@@ -15,7 +15,6 @@ const Navbar = () => {
       ) : (
         <>
           <Link to="/login">Login</Link>
-          <Link to="/">Register</Link>
           <Link to="/single-player-mode">Play now</Link>
         </>
       )}
