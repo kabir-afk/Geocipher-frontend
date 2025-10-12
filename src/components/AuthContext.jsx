@@ -1,22 +1,13 @@
 import { useState, createContext } from "react";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
-
-  const login = (accessToken) => {
-    setIsLoggedIn(true);
-    setAccessToken(accessToken);
-  };
-  const logout = () => {
-    setIsLoggedIn(false);
-    setAccessToken(null);
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(!!Cookies.get("accessToken"));
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, accessToken }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
