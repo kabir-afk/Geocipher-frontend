@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
+import Cookies from "js-cookie";
+import axiosInstance from "../axiosinstance";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,12 +14,16 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
-        username,
-        password,
-      });
+      const response = await axiosInstance.post(
+        "http://127.0.0.1:8000/api/token/",
+        {
+          username,
+          password,
+        }
+      );
       if (response.data.access) {
-        login(response.data.access);
+        Cookies.set("accessToken", response.data.access);
+        setIsLoggedIn(true);
       }
       navigate("/single-player-mode");
     } catch (error) {
