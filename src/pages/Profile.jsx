@@ -1,20 +1,12 @@
-import axios from "axios";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../components/AuthContext";
+import { useEffect } from "react";
+import axiosInstance from "../axiosinstance";
 
 const Profile = () => {
-  const { accessToken } = useContext(AuthContext);
   useEffect(() => {
     const fetchPtotectedData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/protected-view/",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await axiosInstance.get("api/v1/protected-view/");
+
         console.log("response : ", response.data);
       } catch (error) {
         console.error("Error fetching data : ", error);
