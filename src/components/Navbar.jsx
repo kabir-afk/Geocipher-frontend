@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import { useContext } from "react";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
@@ -14,7 +15,8 @@ const Navbar = () => {
           <button
             onClick={() => {
               navigate("/");
-              logout();
+              Cookies.remove("accessToken");
+              setIsLoggedIn(false);
             }}
           >
             Logout
