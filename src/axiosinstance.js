@@ -13,8 +13,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   function (config) {
     const accessToken = Cookies.get("accessToken");
-    console.log(accessToken);
-
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
@@ -44,10 +42,11 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (error) {
-        Cookies.remove("accessToken", null);
+        Cookies.remove("accessToken");
         window.location.href = "/login";
       }
     }
+    return Promise.reject(error);
   }
 );
 
