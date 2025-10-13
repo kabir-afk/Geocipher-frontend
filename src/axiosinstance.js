@@ -43,7 +43,6 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (error) {
         Cookies.remove("accessToken");
-        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
