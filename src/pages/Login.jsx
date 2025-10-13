@@ -14,13 +14,10 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post(
-        "http://127.0.0.1:8000/api/token/",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axiosInstance.post("api/token/", {
+        username,
+        password,
+      });
       if (response.data.access) {
         Cookies.set("accessToken", response.data.access);
         setIsLoggedIn(true);
