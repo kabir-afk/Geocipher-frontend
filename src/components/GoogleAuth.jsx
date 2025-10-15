@@ -1,17 +1,24 @@
-import React from "react";
-import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../axiosinstance";
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
 const GoogleAuth = () => {
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext);
   async function sendCredentials(credentialResponse) {
-    const res = await axios.post(
-      "http://127.0.0.1:8000/api/v1/auth/google",
-      credentialResponse
-    );
-    console.log(res);
-    navigate("/single-player-mode");
+    try {
+      const res = await axiosInstance.post(
+        "api/v1/auth/google",
+        credentialResponse
+      );
+      console.log(res);
+      setIsLoggedIn(true);
+      navigate("/single-player-mode");
+    } catch (error) {
+      console.error(error.response.data);
+    }
   }
   return (
     <div className="w-full ">
