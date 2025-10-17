@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import { useContext } from "react";
 import Cookies from "js-cookie";
+import axiosInstance from "../axiosinstance";
 
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
@@ -12,8 +13,11 @@ const Navbar = () => {
       {isLoggedIn ? (
         <>
           <Link to="/profile">Profile</Link>
+          <Link to="/single-player-mode">single player mode</Link>
           <button
-            onClick={() => {
+            onClick={async () => {
+              const response = await axiosInstance.post("api/v1/logout/", {});
+              console.log(response.data);
               navigate("/");
               Cookies.remove("accessToken");
               setIsLoggedIn(false);
