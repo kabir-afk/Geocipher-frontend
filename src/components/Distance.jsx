@@ -1,6 +1,6 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axiosInstance from "../axiosinstance";
 
 export function Distance({ from, to, round }) {
   const [distance, setDistance] = useState(null);
@@ -18,20 +18,12 @@ export function Distance({ from, to, round }) {
     dist = Math.round(dist / 1000);
     async function fetchScore(from, to, round) {
       try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/api/v1/score",
-          {
-            round: round,
-            user_location: to,
-            actual_location: { lat: from.lat, lng: from.lng },
-            distance: dist,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axiosInstance.post("/api/v1/score", {
+          round: round,
+          user_location: to,
+          actual_location: { lat: from.lat, lng: from.lng },
+          distance: dist,
+        });
         setScore(response.data.score);
       } catch (error) {
         console.error("Error creating post:", error.message);
