@@ -30,7 +30,13 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest.retry) {
+    console.log(originalRequest.url);
+
+    if (
+      error.response.status === 401 &&
+      !originalRequest.retry &&
+      originalRequest.url !== "api/token/refresh/"
+    ) {
       originalRequest.retry = true;
       try {
         // setting the body blank coz refresh token was already set in httponly cookie and
@@ -41,8 +47,14 @@ axiosInstance.interceptors.response.use(
         Cookies.set("accessToken", newAccessToken);
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
-      } catch (error) {
+      } catch (refreshError) {
+        // catching the error when refresh token expires and then logging the user out
+        // and removing the cookies
+        console.log(refreshError);
         Cookies.remove("accessToken");
+        await axiosInstance.post("api/v1/logout/", {});
+        // window.location.href = "/login";
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
