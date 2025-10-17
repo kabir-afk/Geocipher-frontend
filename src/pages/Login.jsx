@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import Cookies from "js-cookie";
 import axiosInstance from "../axiosinstance";
+import GoogleAuth from "../components/GoogleAuth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -59,6 +60,9 @@ const Login = () => {
         </button>
         <small>{error && <div className="text-red-400">{error}</div>}</small>
       </form>
+      <div className="mt-5 rounded-md">
+        <GoogleAuth />
+      </div>
       <button
         className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
         onClick={() => {

@@ -76,9 +76,9 @@ const Register = () => {
             Register <i className="fa fa-fw fa-chevron-right"></i>
           </button>
         </form>
-        {/* <div className="mt-5 rounded-md">
+        <div className="mt-5 rounded-md">
           <GoogleAuth />
-        </div> */}
+        </div>
       </div>
     </>
   );
