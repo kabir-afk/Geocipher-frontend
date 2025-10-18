@@ -16,6 +16,7 @@ import { Timer } from "./components/Timer";
 import { ShimmerDiv } from "shimmer-effects-react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -31,6 +32,7 @@ function App() {
   const [round, setRound] = useState(1);
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
+  const navigate = useNavigate();
   const layoutClassMap = {
     collapsed: "h-48 w-70 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
@@ -74,7 +76,7 @@ function App() {
     scale: 2,
   };
   const handleNextRound = () => {
-    setRound((roundNum) => roundNum + 1);
+    setRound((roundNum) => (roundNum >= 3 ? 1 : roundNum + 1));
     setLayout(false);
     setVisibility(false);
     setMarkerPosition(null);
@@ -135,6 +137,15 @@ function App() {
               cursor={cursor}
               cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
             />
+          ) : round === 3 ? (
+            <button
+              className={"w-full h-full cursor-pointer uppercase"}
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              finish game
+            </button>
           ) : (
             <NextButton
               cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
