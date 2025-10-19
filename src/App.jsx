@@ -17,6 +17,7 @@ import { ShimmerDiv } from "shimmer-effects-react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "./axiosinstance";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -30,6 +31,7 @@ function App() {
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
+  const [gameId, setGameId] = useState(1);
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ function App() {
         const response = await axios.get("http://127.0.0.1:8000/api/v1/");
         setCoords(response.data.coordinates);
       } catch (error) {
-        console.error("Some error", error);
+        console.error("Error fetching coordinates", error);
       }
     }
     fetchCoordinates();
@@ -55,10 +57,16 @@ function App() {
   useEffect(() => {
     if (coords.length > 0) {
       let randomPosition = coords[Math.floor(Math.random() * coords.length)];
-      // console.log(randomPosition);
       randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
       setRandomPosition(randomPosition);
       setTimerState(true);
+      async function fetchGameId() {
+        if (round == 1) {
+          const response = await axiosInstance.post("api/v1/game-id");
+          setGameId(response.data.id);
+        }
+      }
+      fetchGameId();
     }
   }, [round, coords]);
 
@@ -156,6 +164,7 @@ function App() {
         {visibility && (
           <div>
             <Distance
+              gameId={gameId}
               round={round}
               from={{ lat: randomPosition.lat, lng: randomPosition.lng }}
               to={markerPosition}
