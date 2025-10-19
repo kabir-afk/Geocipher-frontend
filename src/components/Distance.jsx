@@ -1,14 +1,17 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../axiosinstance";
 
-export function Distance({ from, to, round }) {
+export function Distance({ from, to, round, gameId }) {
   const [distance, setDistance] = useState(null);
   const [score, setScore] = useState(null);
   const geometryLibrary = useMapsLibrary("geometry");
-
+  const postedRounds = useRef(new Set());
   useEffect(() => {
     if (!geometryLibrary) return;
+
+    if (postedRounds.current.has(round)) return; // ⛔ prevent re-posting
+    postedRounds.current.add(round);
 
     let dist = geometryLibrary.spherical.computeDistanceBetween(
       { lat: from.lat, lng: from.lng },
@@ -19,6 +22,7 @@ export function Distance({ from, to, round }) {
     async function fetchScore(from, to, round) {
       try {
         const response = await axiosInstance.post("/api/v1/score", {
+          game: gameId,
           round: round,
           user_location: to,
           actual_location: { lat: from.lat, lng: from.lng },
@@ -30,7 +34,7 @@ export function Distance({ from, to, round }) {
       }
     }
     fetchScore(from, to, round);
-  }, [geometryLibrary, from, to, round]);
+  }, [geometryLibrary, from, to, round, gameId]);
 
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-fit flex flex-col items-center justify-center">
