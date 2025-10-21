@@ -24,35 +24,39 @@ const Profile = () => {
     score = [],
   } = data ?? {};
   return (
-    <div className="h-full scroll-auto">
+    <div>
       <Navbar />
       <div>{username}</div>
       <div>Avg Score : {avg_score}</div>
       <div>Max Score :{max_score}</div>
       <div>Min Distance :{min_distance}</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Game</th>
-            <th>Rounds</th>
-            <th>Distance</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {score.map((game, gameIdx) => {
-            const rounds = game.rounds ?? [];
-            return rounds.map((round, roundIdx) => (
-              <tr key={`${gameIdx}-${roundIdx}`}>
-                <td>{roundIdx === 0 ? gameIdx + 1 : ""}</td>
-                <td>{round.round ?? roundIdx + 1}</td>
-                <td>{round.distance ?? "-"}</td>
-                <td>{round.score ?? "-"}</td>
-              </tr>
-            ));
-          })}
-        </tbody>
-      </table>
+      <div className="h-60 overflow-auto border-2 border-amber-600">
+        <table>
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th>Rounds</th>
+              <th>Distance(km)</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {score.map((game, gameIdx) => {
+              const rounds = game.rounds ?? [];
+              return rounds.map((round, roundIdx) => (
+                <tr key={`${gameIdx}-${roundIdx}`}>
+                  {roundIdx === 0 && (
+                    <td rowSpan={rounds.length}>{gameIdx + 1}</td>
+                  )}
+                  <td>{round.round ?? roundIdx + 1}</td>
+                  <td>{round.distance ?? "-"}</td>
+                  <td>{round.score ?? "-"}</td>
+                </tr>
+              ));
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
