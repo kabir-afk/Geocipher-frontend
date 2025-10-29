@@ -16,6 +16,7 @@ import { Distance } from "../components/Distance";
 import axiosInstance from "../axiosinstance";
 import Cookies from "js-cookie";
 import Waiting from "../components/Waiting";
+import { Round } from "../components/Round";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -60,6 +61,13 @@ const Multiplayer = () => {
     setMarkerPosition(null);
     setCursor(true);
     setTimerState(true);
+    setGuesses([]);
+    setGuessReceived(false);
+    setAllGuessesReceived(false);
+    markerRefs.current = {};
+    send({
+      event: "next_round",
+    });
   };
   useEffect(() => {
     const websocketProtocol =
@@ -144,7 +152,7 @@ const Multiplayer = () => {
               className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
             >
               <Map
-                // key={round}
+                key={round}
                 defaultCenter={defaultPosition}
                 defaultZoom={2}
                 mapId="MAP_ID"
@@ -255,6 +263,7 @@ const Multiplayer = () => {
                 />
               </div>
             )}
+            <Round round={round} />
             <StreetView position={randomPosition} />
           </div>
         </APIProvider>
