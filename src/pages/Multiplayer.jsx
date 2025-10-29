@@ -80,9 +80,11 @@ const Multiplayer = () => {
         console.log(data);
         setAllGuessesReceived(true);
         const list = Object.entries(data.guesses).map(
-          ([name, { lat, lng }]) => ({
+          ([name, { lat, lng, score, distance }]) => ({
             name,
             pos: { lat, lng },
+            score,
+            distance,
           })
         );
         setGuesses(list);
@@ -134,7 +136,7 @@ const Multiplayer = () => {
   return (
     <>
       {randomPosition === null ? (
-        <Waiting message={"Waiting for other users to join"} />
+        <Waiting message={"Waiting for other players to join"} />
       ) : (
         <APIProvider apiKey={API_KEY}>
           <div className="h-full font-overpass font-bold">
@@ -165,7 +167,7 @@ const Multiplayer = () => {
                     >
                       <Pin
                         background={"#000"}
-                        glyph={"🏳️"}
+                        glyphText={"🏳️"}
                         borderColor={"#000"}
                       />
                     </AdvancedMarker>
@@ -208,7 +210,13 @@ const Multiplayer = () => {
                             anchor={markerRefs.current[markerId]}
                             maxWidth={200}
                           >
-                            <div>Player : {guess.name}</div>
+                            <div>
+                              <ul>
+                                <li>Player : {guess.name}</li>
+                                <li>Score : {guess.score}</li>
+                                <li>Distance : {guess.distance} KM</li>
+                              </ul>
+                            </div>
                           </InfoWindow>
                         )}
                       </React.Fragment>
