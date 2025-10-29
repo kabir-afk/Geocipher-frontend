@@ -1,32 +1,41 @@
 import {
   APIProvider,
   Map,
+  InfoWindow,
   AdvancedMarker,
   useAdvancedMarkerRef,
   Pin,
 } from "@vis.gl/react-google-maps";
-import { useEffect, useState, useRef } from "react";
-import { ShimmerDiv } from "shimmer-effects-react";
+import React, { useEffect, useState, useRef } from "react";
 import { StreetView } from "../components/StreetView";
 import { useNavigate } from "react-router-dom";
 import { GuessButton } from "../components/GuessButton";
 import { NextButton } from "../components/NextButton";
 import { Polyline } from "../components/Polyline";
+import { Distance } from "../components/Distance";
+import axiosInstance from "../axiosinstance";
+import Cookies from "js-cookie";
+import Waiting from "../components/Waiting";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const Multiplayer = () => {
-  // const [data, setData] = useState("");
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
   const [randomPosition, setRandomPosition] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [cursor, setCursor] = useState(true);
   const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [timerState, setTimerState] = useState(false);
+  const [__timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
+  const markerRefs = useRef({});
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
+  const [gameId, setGameId] = useState(1);
+  const [guessReceived, setGuessReceived] = useState(false);
+  const [allGuessesReceived, setAllGuessesReceived] = useState(false);
+  const [guesses, setGuesses] = useState([]);
+  const [socketMsg, setSocketMsg] = useState("");
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const layoutClassMap = {
@@ -38,26 +47,12 @@ const Multiplayer = () => {
     ? layoutClassMap.expanded
     : layoutClassMap.collapsed;
 
-  function send(data) {
-    if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({ message: data }));
-    } else {
-      console.warn("WebSocket not connected");
-    }
-  }
-
   const lineSymbol = {
     path: "M 0,-1 0,1",
     strokeOpacity: 1,
     scale: 2,
   };
-  function stateChange() {
-    if (markerPosition !== null) {
-      setVisibility(true);
-      setLayout(true);
-      setTimerState(false);
-    }
-  }
+
   const handleNextRound = () => {
     setRound((roundNum) => (roundNum >= 3 ? 1 : roundNum + 1));
     setLayout(false);
@@ -69,23 +64,48 @@ const Multiplayer = () => {
   useEffect(() => {
     const websocketProtocol =
       window.location.protocol === "https:" ? "wss" : "ws";
-    const wsEndpoint = `${websocketProtocol}://localhost:8000/ws/`;
+    const accessToken = Cookies.get("accessToken");
+    const wsEndpoint = `${websocketProtocol}://localhost:8000/ws/?token=${accessToken}`;
     const socket = new WebSocket(wsEndpoint);
 
     socket.onmessage = function (event) {
       let data = JSON.parse(event.data);
-      if (JSON.parse(event.data).event === "room_full") {
+      if (data.event === "room_full") {
         let pos = { lat: data.coordinate.lat, lng: data.coordinate.lng };
         setRandomPosition(pos);
+      } else if (data.event === "guess_received") {
+        setGuessReceived(true);
+        setSocketMsg(data.message);
+      } else if (data.event === "results_ready") {
+        console.log(data);
+        setAllGuessesReceived(true);
+        const list = Object.entries(data.guesses).map(
+          ([name, { lat, lng }]) => ({
+            name,
+            pos: { lat, lng },
+          })
+        );
+        setGuesses(list);
+        setVisibility(true);
+        setLayout(true);
+        setTimerState(false);
       }
     };
 
     socket.onopen = () => {
       console.log("WebSocket connection opened!");
+      async function fetchGameId() {
+        if (round == 1) {
+          const response = await axiosInstance.post("api/v1/game-id");
+          setGameId(response.data.id);
+        }
+      }
+      fetchGameId();
     };
 
     socket.onclose = () => {
       console.log("WebSocket connection closed!");
+      navigate("/profile");
     };
 
     socketRef.current = socket;
@@ -95,14 +115,26 @@ const Multiplayer = () => {
     // };
   }, []);
 
-  useEffect(() => {
-    console.log(randomPosition);
-  }, [randomPosition]);
+  function send(data) {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ data }));
+    } else {
+      console.warn("WebSocket not connected");
+    }
+  }
+
+  function sendGuess() {
+    send({
+      event: "guess",
+      user_location: markerPosition,
+      actual_location: randomPosition,
+    });
+  }
 
   return (
     <>
       {randomPosition === null ? (
-        <ShimmerDiv mode="dark" height="100vh" width="100vw" loading={true} />
+        <Waiting message={"Waiting for other users to join"} />
       ) : (
         <APIProvider apiKey={API_KEY}>
           <div className="h-full font-overpass font-bold">
@@ -137,49 +169,84 @@ const Multiplayer = () => {
                         borderColor={"#000"}
                       />
                     </AdvancedMarker>
-
-                    <Polyline
-                      path={[randomPosition, markerPosition]}
-                      strokeOpacity={0}
-                      strokeWeight={2}
-                      strokeColor={"#000"}
-                      icons={[
-                        {
-                          icon: lineSymbol,
-                          offset: "0",
-                          repeat: "10px",
-                        },
-                      ]}
-                    />
                   </>
                 )}
-                <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
+                {allGuessesReceived === false ? (
+                  <AdvancedMarker
+                    ref={userMarkerRef}
+                    position={markerPosition}
+                  />
+                ) : (
+                  guesses.map((guess, index) => {
+                    const markerId = `marker-${index}`;
+                    return (
+                      <React.Fragment key={markerId}>
+                        <Polyline
+                          path={[randomPosition, guess.pos]}
+                          strokeOpacity={0}
+                          strokeWeight={2}
+                          strokeColor={"#000"}
+                          icons={[
+                            {
+                              icon: lineSymbol,
+                              offset: "0",
+                              repeat: "10px",
+                            },
+                          ]}
+                        />
+                        <AdvancedMarker
+                          ref={(el) => {
+                            if (el) {
+                              markerRefs.current[markerId] = el;
+                            }
+                          }}
+                          position={guess.pos}
+                        />
+                        {markerRefs.current[markerId] && (
+                          <InfoWindow
+                            className="bg-black text-amber-50"
+                            anchor={markerRefs.current[markerId]}
+                            maxWidth={200}
+                          >
+                            <div>Player : {guess.name}</div>
+                          </InfoWindow>
+                        )}
+                      </React.Fragment>
+                    );
+                  })
+                )}
               </Map>
             </div>
-            <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
-              {visibility === false ? (
+            {guessReceived === false && allGuessesReceived === false ? (
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
                 <GuessButton
                   position={randomPosition}
-                  stateChange={stateChange}
+                  sendGuess={sendGuess}
                   cursor={cursor}
                   cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
                 />
-              ) : round === 3 ? (
-                <button
-                  className={"w-full h-full cursor-pointer uppercase"}
-                  onClick={() => {
-                    navigate("/profile");
-                  }}
-                >
-                  finish game
-                </button>
-              ) : (
+              </div>
+            ) : guessReceived === true && allGuessesReceived === false ? (
+              <Waiting message={socketMsg} />
+            ) : (
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
                 <NextButton
                   cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
                   setNextRoundLayout={handleNextRound}
                 />
-              )}
-            </div>
+              </div>
+            )}
+            {visibility && (
+              <div>
+                <Distance
+                  gameId={gameId}
+                  round={round}
+                  from={{ lat: randomPosition.lat, lng: randomPosition.lng }}
+                  to={markerPosition}
+                  send={send}
+                />
+              </div>
+            )}
             <StreetView position={randomPosition} />
           </div>
         </APIProvider>
