@@ -116,7 +116,11 @@ function App() {
             {visibility && (
               <>
                 <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
-                  <Pin background={"#000"} glyph={"🏳️"} borderColor={"#000"} />
+                  <Pin
+                    background={"#000"}
+                    glyphText={"🏳️"}
+                    borderColor={"#000"}
+                  />
                 </AdvancedMarker>
 
                 <Polyline
