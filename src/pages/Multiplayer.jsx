@@ -244,6 +244,22 @@ const Multiplayer = () => {
               </div>
             ) : guessReceived === true && allGuessesReceived === false ? (
               <Waiting message={socketMsg} />
+            ) : round === 3 ? (
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
+                <button
+                  className={"w-full h-full cursor-pointer uppercase"}
+                  onClick={() => {
+                    if (
+                      socketRef.current &&
+                      socketRef.current.readyState === WebSocket.OPEN
+                    ) {
+                      socketRef.current.close();
+                    }
+                  }}
+                >
+                  finish game
+                </button>
+              </div>
             ) : (
               <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
                 <NextButton
