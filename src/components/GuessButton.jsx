@@ -1,6 +1,12 @@
 import { useMap } from "@vis.gl/react-google-maps";
 
-export function GuessButton({ position, stateChange, cursor, cursorStyle }) {
+export function GuessButton({
+  position,
+  sendGuess,
+  stateChange,
+  cursor,
+  cursorStyle,
+}) {
   const map = useMap();
   function zoomOutAndIn(event) {
     event.preventDefault();
@@ -27,8 +33,10 @@ export function GuessButton({ position, stateChange, cursor, cursorStyle }) {
   }
   function panToPosition(event) {
     event.preventDefault();
-    if (stateChange) stateChange();
-    zoomOutAndIn(event);
+    if (stateChange) {
+      stateChange();
+      zoomOutAndIn(event);
+    } else if (sendGuess) sendGuess();
   }
   return (
     <button
