@@ -3,7 +3,7 @@ import axiosInstance from "../axiosinstance";
 
 export function Distance({ from, to, round, gameId }) {
   const [distance, setDistance] = useState(null);
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState(0);
   const postedRounds = useRef(new Set());
   useEffect(() => {
     if (postedRounds.current.has(round)) return; // ⛔ prevent re-posting
@@ -14,7 +14,7 @@ export function Distance({ from, to, round, gameId }) {
         const response = await axiosInstance.post("/api/v1/score", {
           game: gameId,
           round: round,
-          user_location: to,
+          user_location: to ? to : 0,
           actual_location: { lat: from.lat, lng: from.lng },
         });
         setScore(response.data.score);
@@ -33,7 +33,11 @@ export function Distance({ from, to, round, gameId }) {
         Your Score is {score}
       </div>
       <div className=" bg-purple-600 text-white mt-2 p-2 rounded-2xl">
-        Your guess was {distance} KM from the correct location.
+        {distance !== 0 ? (
+          <p>Your guess was {distance} KM from the correct location.</p>
+        ) : (
+          <p>You didnt make any guess.</p>
+        )}
       </div>
     </div>
   );
