@@ -70,6 +70,12 @@ function App() {
     }
   }, [round, coords]);
 
+  const handleTimeFinish = () => {
+    setVisibility(true);
+    setLayout(true);
+    setTimerState(false);
+  };
+
   function stateChange() {
     if (markerPosition !== null) {
       setVisibility(true);
@@ -176,7 +182,7 @@ function App() {
           </div>
         )}
         <Navbar />
-        <Timer timerState={timerState} />
+        <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
         <Round round={round} />
         <div className="h-full w-full">
           {!timerState ? (
