@@ -42,7 +42,7 @@ const Multiplayer = () => {
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const layoutClassMap = {
-    collapsed: "h-48 w-70 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
+    collapsed: "h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
   };
 
@@ -250,7 +250,7 @@ const Multiplayer = () => {
               </Map>
             </div>
             {guessReceived === false && allGuessesReceived === false ? (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
                 <GuessButton
                   position={randomPosition}
                   sendGuess={sendGuess}
@@ -261,7 +261,7 @@ const Multiplayer = () => {
             ) : guessReceived === true && allGuessesReceived === false ? (
               <Waiting message={socketMsg} />
             ) : round === 3 ? (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
                 <button
                   className={"w-full h-full cursor-pointer uppercase"}
                   onClick={() => {
@@ -277,7 +277,7 @@ const Multiplayer = () => {
                 </button>
               </div>
             ) : (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
+              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
                 <NextButton
                   cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
                   setNextRoundLayout={handleNextRound}

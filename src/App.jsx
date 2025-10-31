@@ -36,7 +36,7 @@ function App() {
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
   const navigate = useNavigate();
   const layoutClassMap = {
-    collapsed: "h-48 w-70 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
+    collapsed: "h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
   };
 
@@ -147,7 +147,7 @@ function App() {
             <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
           </Map>
         </div>
-        <div className="absolute z-10 right-1 bottom-4 py-1 w-70 rounded-md text-center bg-green-500 text-amber-50 ">
+        <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
           {visibility === false ? (
             <GuessButton
               position={randomPosition}
@@ -184,7 +184,7 @@ function App() {
         <Navbar />
         <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
         <Round round={round} />
-        <div className="h-full w-full">
+        <div className="z-0 h-full w-full">
           {!timerState ? (
             <ShimmerDiv
               mode="dark"
