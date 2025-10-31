@@ -19,6 +19,7 @@ import Waiting from "../components/Waiting";
 import { Round } from "../components/Round";
 import { Timer } from "../components/Timer";
 import Navbar from "../components/Navbar";
+import { CustomAdvancedMarker } from "../components/CustomAdvancedMarker";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -31,7 +32,6 @@ const Multiplayer = () => {
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
-  const markerRefs = useRef({});
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
   const [gameId, setGameId] = useState(1);
@@ -79,7 +79,6 @@ const Multiplayer = () => {
     setGuesses([]);
     setGuessReceived(false);
     setAllGuessesReceived(false);
-    markerRefs.current = {};
     send({
       event: "ready",
     });
@@ -220,29 +219,7 @@ const Multiplayer = () => {
                             },
                           ]}
                         />
-                        <AdvancedMarker
-                          ref={(el) => {
-                            if (el) {
-                              markerRefs.current[markerId] = el;
-                            }
-                          }}
-                          position={guess.pos}
-                        />
-                        {markerRefs.current[markerId] && (
-                          <InfoWindow
-                            className="bg-black text-amber-50"
-                            anchor={markerRefs.current[markerId]}
-                            maxWidth={200}
-                          >
-                            <div>
-                              <ul>
-                                <li>Player : {guess.name}</li>
-                                <li>Score : {guess.score}</li>
-                                <li>Distance : {guess.distance} KM</li>
-                              </ul>
-                            </div>
-                          </InfoWindow>
-                        )}
+                        <CustomAdvancedMarker guess={guess} />
                       </React.Fragment>
                     );
                   })
