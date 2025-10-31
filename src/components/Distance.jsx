@@ -34,9 +34,9 @@ export function Distance({ from, to, round, gameId }) {
       </div>
       <div className=" bg-purple-600 text-white mt-2 p-2 rounded-2xl">
         {distance !== 0 ? (
-          <p>Your guess was {distance} KM from the correct location.</p>
+          <span>Your guess was {distance} KM from the correct location.</span>
         ) : (
-          <p>You didnt make any guess.</p>
+          <span>You didnt make any guess.</span>
         )}
       </div>
     </div>
