@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 export function Timer({ timerState, onTimeFinish }) {
-  const [timeLeft, setTimeLeft] = useState(120);
+  const time = 120;
+  const [timeLeft, setTimeLeft] = useState(time);
   const [isRunning, setIsRunning] = useState(true);
 
   const formatTime = (totalSeconds) => {
@@ -12,7 +13,7 @@ export function Timer({ timerState, onTimeFinish }) {
       .padStart(2, "0")}`;
   };
   function resetTimer() {
-    setTimeLeft(120);
+    setTimeLeft(time);
     setIsRunning(true);
   }
   useEffect(() => {
