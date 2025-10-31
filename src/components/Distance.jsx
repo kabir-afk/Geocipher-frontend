@@ -14,7 +14,7 @@ export function Distance({ from, to, round, gameId }) {
         const response = await axiosInstance.post("/api/v1/score", {
           game: gameId,
           round: round,
-          user_location: to ? to : 0,
+          user_location: to ? to : { lat: 0, lng: 0 },
           actual_location: { lat: from.lat, lng: from.lng },
         });
         setScore(response.data.score);
