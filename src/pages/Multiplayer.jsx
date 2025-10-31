@@ -17,6 +17,8 @@ import axiosInstance from "../axiosinstance";
 import Cookies from "js-cookie";
 import Waiting from "../components/Waiting";
 import { Round } from "../components/Round";
+import { Timer } from "../components/Timer";
+import Navbar from "../components/Navbar";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -27,7 +29,7 @@ const Multiplayer = () => {
   const [cursor, setCursor] = useState(true);
   const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [__timerState, setTimerState] = useState(false);
+  const [timerState, setTimerState] = useState(false);
   const [round, setRound] = useState(1);
   const markerRefs = useRef({});
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
@@ -54,6 +56,19 @@ const Multiplayer = () => {
     scale: 2,
   };
 
+  const handleTimeFinish = () => {
+    setVisibility(true);
+    setLayout(true);
+    setTimerState(false);
+
+    send({
+      event: "guess",
+      user_location:
+        markerPosition !== null ? markerPosition : { lat: 0, lng: 0 },
+      actual_location: randomPosition,
+    });
+  };
+
   const handleNextRound = () => {
     setRound((roundNum) => (roundNum >= 3 ? 1 : roundNum + 1));
     setLayout(false);
@@ -66,7 +81,7 @@ const Multiplayer = () => {
     setAllGuessesReceived(false);
     markerRefs.current = {};
     send({
-      event: "next_round",
+      event: "ready",
     });
   };
   useEffect(() => {
@@ -81,20 +96,21 @@ const Multiplayer = () => {
       if (data.event === "room_full") {
         let pos = { lat: data.coordinate.lat, lng: data.coordinate.lng };
         setRandomPosition(pos);
+        setTimerState(true);
       } else if (data.event === "guess_received") {
         setGuessReceived(true);
         setSocketMsg(data.message);
       } else if (data.event === "results_ready") {
-        console.log(data);
         setAllGuessesReceived(true);
-        const list = Object.entries(data.guesses).map(
-          ([name, { lat, lng, score, distance }]) => ({
+        const list = Object.entries(data.guesses)
+          .map(([name, { lat, lng, score, distance }]) => ({
             name,
             pos: { lat, lng },
             score,
             distance,
-          })
-        );
+          }))
+          .filter((user) => user.distance !== 0);
+
         setGuesses(list);
         setVisibility(true);
         setLayout(true);
@@ -279,6 +295,8 @@ const Multiplayer = () => {
                 />
               </div>
             )}
+            <Navbar />
+            <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
             <Round round={round} />
             <StreetView position={randomPosition} />
           </div>
