@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
+import Multiplayer from "./pages/Multiplayer.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./components/AuthContext";
 import Profile from "./pages/Profile.jsx";
@@ -42,14 +43,19 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <div>404 Not Found</div>,
   },
+  {
+    path: "/multi-player-mode",
+    element: <Multiplayer />,
+    errorElement: <div>404 Not Found</div>,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </GoogleOAuthProvider>
-  </StrictMode>
+  // <StrictMode>
+  <GoogleOAuthProvider clientId={CLIENT_ID}>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  </GoogleOAuthProvider>
+  // </StrictMode>
 );
