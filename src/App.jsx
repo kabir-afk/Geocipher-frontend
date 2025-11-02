@@ -30,6 +30,9 @@ function App() {
   const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [isToggleBtn, setIsToggleBtn] = useState(true);
   const [round, setRound] = useState(1);
   const [gameId, setGameId] = useState(1);
   const [userMarkerRef, _userMarker] = useAdvancedMarkerRef();
@@ -43,6 +46,7 @@ function App() {
   const containerClass = layout
     ? layoutClassMap.expanded
     : layoutClassMap.collapsed;
+
   useEffect(() => {
     async function fetchCoordinates() {
       try {
@@ -54,10 +58,14 @@ function App() {
     }
     fetchCoordinates();
   }, []);
+
   useEffect(() => {
     if (coords.length > 0) {
       let randomPosition = coords[Math.floor(Math.random() * coords.length)];
       randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
+      if (window.innerWidth < 768) {
+        setIsMobile(true);
+      }
       setRandomPosition(randomPosition);
       setTimerState(true);
       async function fetchGameId() {
@@ -82,6 +90,9 @@ function App() {
       setLayout(true);
       setTimerState(false);
     }
+    if (isMobile) {
+      setIsToggleBtn(false);
+    }
   }
 
   const lineSymbol = {
@@ -89,6 +100,7 @@ function App() {
     strokeOpacity: 1,
     scale: 2,
   };
+
   const handleNextRound = () => {
     setRound((roundNum) => (roundNum >= 3 ? 1 : roundNum + 1));
     setLayout(false);
@@ -96,57 +108,65 @@ function App() {
     setMarkerPosition(null);
     setCursor(true);
     setTimerState(true);
+    if (isMobile) {
+      setShowMap(false);
+      setIsToggleBtn(true);
+    }
   };
+
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="h-full font-overpass font-bold">
-        <div
-          className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
-        >
-          <Map
-            key={round}
-            defaultCenter={defaultPosition}
-            defaultZoom={2}
-            mapId="MAP_ID"
-            disableDefaultUI
-            onClick={(e) => {
-              visibility
-                ? e.preventDefault()
-                : setMarkerPosition({
-                    lat: e.detail.latLng.lat,
-                    lng: e.detail.latLng.lng,
-                  });
-              setCursor(false);
-            }}
+        {(!isMobile || showMap) && (
+          <div
+            className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
           >
-            {visibility && (
-              <>
-                <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
-                  <Pin
-                    background={"#000"}
-                    glyphText={"🏳️"}
-                    borderColor={"#000"}
-                  />
-                </AdvancedMarker>
+            <Map
+              key={round}
+              defaultCenter={defaultPosition}
+              defaultZoom={2}
+              mapId="MAP_ID"
+              disableDefaultUI
+              onClick={(e) => {
+                visibility
+                  ? e.preventDefault()
+                  : setMarkerPosition({
+                      lat: e.detail.latLng.lat,
+                      lng: e.detail.latLng.lng,
+                    });
+                setCursor(false);
+              }}
+            >
+              {visibility && (
+                <>
+                  <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
+                    <Pin
+                      background={"#000"}
+                      glyphText={"🏳️"}
+                      borderColor={"#000"}
+                    />
+                  </AdvancedMarker>
 
-                <Polyline
-                  path={[randomPosition, markerPosition]}
-                  strokeOpacity={0}
-                  strokeWeight={2}
-                  strokeColor={"#000"}
-                  icons={[
-                    {
-                      icon: lineSymbol,
-                      offset: "0",
-                      repeat: "10px",
-                    },
-                  ]}
-                />
-              </>
-            )}
-            <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
-          </Map>
-        </div>
+                  <Polyline
+                    path={[randomPosition, markerPosition]}
+                    strokeOpacity={0}
+                    strokeWeight={2}
+                    strokeColor={"#000"}
+                    icons={[
+                      {
+                        icon: lineSymbol,
+                        offset: "0",
+                        repeat: "10px",
+                      },
+                    ]}
+                  />
+                </>
+              )}
+              <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
+            </Map>
+          </div>
+        )}
+
         <div className="w-full absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center gap-2 xl:not-last:justify-end">
           {visibility && (
             <div>
@@ -158,13 +178,26 @@ function App() {
               />
             </div>
           )}
+          {isMobile && isToggleBtn && (
+            <button
+              className="py-1 rounded-md text-center bg-blue-500 text-amber-50 cursor-pointer uppercase ml-auto"
+              onClick={() => {
+                setShowMap(!showMap);
+                setLayout(!layout);
+              }}
+            >
+              Toggle Map
+            </button>
+          )}
           {visibility === false ? (
-            <GuessButton
-              position={randomPosition}
-              stateChange={stateChange}
-              cursor={cursor}
-              cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
-            />
+            (!isMobile || (isMobile && showMap)) && (
+              <GuessButton
+                position={randomPosition}
+                stateChange={stateChange}
+                cursor={cursor}
+                cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
+              />
+            )
           ) : (
             <div className="py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 lg-button-pos">
               {round === 3 ? (
