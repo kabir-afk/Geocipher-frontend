@@ -42,7 +42,7 @@ export function GuessButton({
     <button
       type="submit"
       disabled={cursor}
-      className={`w-80 h-full ${cursorStyle} uppercase py-1 rounded-md text-center bg-green-500 text-amber-50 ml-auto`}
+      className={`w-80 h-full ${cursorStyle} uppercase py-1 rounded-md text-center bg-green-500 text-amber-50 ml-auto mr-2`}
       onClick={panToPosition}
     >
       guess
