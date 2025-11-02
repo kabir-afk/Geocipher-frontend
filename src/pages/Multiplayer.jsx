@@ -226,54 +226,58 @@ const Multiplayer = () => {
                 )}
               </Map>
             </div>
-            {guessReceived === false && allGuessesReceived === false ? (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
+            <div className="w-full absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center gap-2 xl:not-last:justify-end">
+              {visibility && (
+                <div>
+                  <Distance
+                    gameId={gameId}
+                    round={round}
+                    from={{ lat: randomPosition.lat, lng: randomPosition.lng }}
+                    to={markerPosition}
+                    send={send}
+                  />
+                </div>
+              )}
+              {guessReceived === false && allGuessesReceived === false ? (
                 <GuessButton
                   position={randomPosition}
                   sendGuess={sendGuess}
                   cursor={cursor}
                   cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
                 />
-              </div>
-            ) : guessReceived === true && allGuessesReceived === false ? (
-              <Waiting message={socketMsg} />
-            ) : round === 3 ? (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
-                <button
-                  className={"w-full h-full cursor-pointer uppercase"}
-                  onClick={() => {
-                    if (
-                      socketRef.current &&
-                      socketRef.current.readyState === WebSocket.OPEN
-                    ) {
-                      socketRef.current.close();
-                    }
-                  }}
-                >
-                  finish game
-                </button>
-              </div>
-            ) : (
-              <div className="absolute z-10 right-1 bottom-4 py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 ">
-                <NextButton
-                  cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
-                  setNextRoundLayout={handleNextRound}
-                />
-              </div>
-            )}
-            {visibility && (
-              <div>
-                <Distance
-                  gameId={gameId}
-                  round={round}
-                  from={{ lat: randomPosition.lat, lng: randomPosition.lng }}
-                  to={markerPosition}
-                  send={send}
-                />
-              </div>
-            )}
-            <Navbar />
-            <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
+              ) : guessReceived === true && allGuessesReceived === false ? (
+                <Waiting message={socketMsg} />
+              ) : (
+                <div className="py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 lg-button-pos">
+                  {round === 3 ? (
+                    <button
+                      className={"w-full h-full cursor-pointer uppercase"}
+                      onClick={() => {
+                        if (
+                          socketRef.current &&
+                          socketRef.current.readyState === WebSocket.OPEN
+                        ) {
+                          socketRef.current.close();
+                        }
+                      }}
+                    >
+                      finish game
+                    </button>
+                  ) : (
+                    <NextButton
+                      cursorStyle={
+                        cursor ? "cursor-not-allowed" : "cursor-pointer"
+                      }
+                      setNextRoundLayout={handleNextRound}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="w-full absolute z-10 left-1/2 transform -translate-x-1/2 top-5 flex flex-col justify-center items-center gap-3">
+              <Navbar />
+              <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
+            </div>
             <Round round={round} />
             <StreetView position={randomPosition} />
           </div>
