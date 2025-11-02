@@ -260,13 +260,13 @@ const Multiplayer = () => {
               )}
               {isMobile && isToggleBtn && (
                 <button
-                  className="py-1 rounded-md text-center bg-blue-500 text-amber-50 cursor-pointer uppercase ml-auto"
+                  className="fixed bottom-10 right-2 p-3 rounded-full text-center bg-blue-500 text-amber-50 cursor-pointer uppercase"
                   onClick={() => {
                     setShowMap(!showMap);
                     setLayout(!layout);
                   }}
                 >
-                  Toggle Map
+                  <img src="/image.png" alt="map-icon" width={40} height={40} />
                 </button>
               )}
               {guessReceived === false && allGuessesReceived === false ? (
