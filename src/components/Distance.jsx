@@ -27,12 +27,12 @@ export function Distance({ from, to, round, gameId }) {
   }, [from, to, round, gameId]);
 
   return (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-fit flex flex-col items-center justify-center">
-      <div className="w-fit bg-amber-300 text-black p-2 rounded-2xl">
+    <div className="*:p-2 *:rounded-2xl flex flex-col justify-center items-center gap-2">
+      <div className="w-fit bg-amber-300 text-black">
         {" "}
         Your Score is {score}
       </div>
-      <div className=" bg-purple-600 text-white mt-2 p-2 rounded-2xl">
+      <div className=" bg-purple-600 text-white">
         {distance !== 0 ? (
           <span>Your guess was {distance} KM from the correct location.</span>
         ) : (

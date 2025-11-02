@@ -34,7 +34,7 @@ export function Timer({ timerState, onTimeFinish }) {
   }, [isRunning, timerState, onTimeFinish, timeLeft]);
 
   return (
-    <div className="w-25 text-center absolute z-10 top-20 left-1/2 transform -translate-x-1/2 bg-black opacity-55 backdrop-blur-3xl p-2 text-white border-4 border-purple-600 rounded-3xl">
+    <div className="w-25 text-center bg-black opacity-55 backdrop-blur-3xl p-2 text-white border-4 border-purple-600 rounded-3xl">
       {formatTime(timeLeft)}
     </div>
   );

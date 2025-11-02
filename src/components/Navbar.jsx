@@ -9,11 +9,16 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-fit px-4 absolute z-10 top-5 left-1/2 transform -translate-x-1/2 bg-gray-600 opacity-55 backdrop-blur-3xl p-2 text-white rounded-3xl flex justify-between gap-4 [&>*]:cursor-pointer [&>*]:hover:text-black">
+    <div
+      className="flex flex-nowrap items-center justify-between gap-4 px-4 py-2 
+                bg-gray-600/55 backdrop-blur-3xl text-white rounded-3xl 
+                w-auto max-w-full overflow-x-auto *:cursor-pointer *:hover:text-black"
+    >
       {isLoggedIn ? (
         <>
           <Link to="/profile">Profile</Link>
-          <Link to="/single-player-mode">single player mode</Link>
+          <Link to="/single-player-mode">Single Player Mode</Link>
+          <Link to="/multi-player-mode">Multi Player Mode</Link>
           <button
             onClick={async () => {
               const response = await axiosInstance.post("api/v1/logout/", {});

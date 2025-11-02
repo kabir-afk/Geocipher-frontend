@@ -6,6 +6,14 @@
   --color-onyx: #3e363f;
   --color-cinnabar: #dd403a;
   --color-cosmiclatte: #fffce8;
+
+  --breakpoint-medium: 58rem;
+}
+
+@layer components {
+  .lg-button-pos {
+    @apply xl:absolute xl:z-10 xl:right-1;
+  }
 }
 
 body {
