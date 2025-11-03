@@ -14,23 +14,52 @@
   .lg-button-pos {
     @apply xl:absolute xl:z-10 xl:right-1;
   }
+  .card {
+    @apply border-2 border-amber-50 rounded-md w-1/3 py-3 flex flex-col-reverse bg-gray-600/55 backdrop-blur-3xl text-white;
+  }
+
+  .card p {
+    @apply text-2xl font-bold;
+  }
 }
 
-body {
-  /* background-image: url(https://unsplash.it/1400/799); */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* background-color: var(--color-onyx); */
-  color: var(--color-onyx);
-
-  height: 100vh;
-  overflow: hidden;
+@layer utilities {
+  .bg-custom-gradient {
+    background-image: radial-gradient(
+        66.5% 221.21% at 136.03% -61.44%,
+        #a685ff 0%,
+        rgba(121, 80, 229, 0) 92.09%
+      ),
+      radial-gradient(
+        93.54% 126.91% at 29.15% -56.29%,
+        rgba(254, 205, 25, 0.5) 0%,
+        rgba(254, 205, 25, 0) 92.09%
+      ),
+      radial-gradient(
+        86.19% 101.84% at -17.13% -24.8%,
+        rgba(255, 164, 61, 0.5) 0%,
+        rgba(191, 123, 46, 0) 92.09%
+      );
+    background-color: #171235;
+  }
 }
 
-table,
+table {
+  width: 100%;
+}
+
+th {
+  background-color: rgba(74, 85, 101, 0.8);
+  font-weight: bold;
+}
+
+td {
+  background-color: rgba(74, 85, 101, 0.55);
+}
+
 th,
 td {
-  border: 1px solid black;
-  border-collapse: collapse; /* Optional: collapses borders into a single line */
+  padding: 1rem;
+  border-bottom: 1px solid black;
+  text-align: center;
 }
