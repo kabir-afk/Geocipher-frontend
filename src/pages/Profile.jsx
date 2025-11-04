@@ -23,6 +23,9 @@ const Profile = () => {
     max_score,
     min_distance,
     score = [],
+    xp,
+    xp_required,
+    level,
   } = data ?? {};
   return (
     <div className="bg-custom-gradient min-h-screen font-overpass text-white">
@@ -30,11 +33,22 @@ const Profile = () => {
         <Navbar />
       </div>
 
-      <div className="w-[80%] relative top-10 left-1/2 transform -translate-x-1/2 text-center flex flex-col gap-3">
-        <div className="border-2 border-amber-950">
-          <h1>{username}</h1>
-          <p>Joined {date_joined}</p>
+      <div className="w-[85%] relative top-10 left-1/2 transform -translate-x-1/2 text-center flex flex-col gap-3">
+        <div>
+          <div className="flex justify-between p-4">
+            <div className="text-left">
+              <h1 className="font-bold text-2xl">{username}</h1>
+              <p>Joined {date_joined}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-bold">Level : {level}</p>
+              {xp}/{xp_required} XP to next level
+            </div>
+          </div>
           <div className="flex justify-between gap-4">
+            <div className="card">
+              <h2>Total Games played</h2> <p>{score.length}</p>
+            </div>
             <div className="card">
               <h2>Max Score</h2> <p>{max_score}</p>
             </div>
