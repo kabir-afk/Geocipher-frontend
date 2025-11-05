@@ -309,7 +309,7 @@ const Multiplayer = () => {
                 </div>
               )}
             </div>
-            <div className="w-full absolute z-10 left-1/2 transform -translate-x-1/2 top-5 flex flex-col justify-center items-center gap-3">
+            <div className="w-full absolute z-10 left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3">
               <Navbar />
               <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
             </div>
