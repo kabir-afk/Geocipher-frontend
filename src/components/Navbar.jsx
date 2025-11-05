@@ -1,35 +1,48 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Cookies from "js-cookie";
 import axiosInstance from "../axiosinstance";
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
     <div
-      className="flex flex-nowrap items-center justify-between gap-4 px-4 py-2 
-                bg-gray-600/55 backdrop-blur-3xl text-white rounded-3xl 
-                w-auto max-w-full overflow-x-auto *:cursor-pointer *:hover:text-black"
+      className="bg-gray-600 opacity-55 backdrop-blur-3xl text-white  
+                w-full md:w-auto md:rounded-3xl"
     >
       {isLoggedIn ? (
         <>
-          <Link to="/profile">Profile</Link>
-          <Link to="/single-player-mode">Single Player Mode</Link>
-          <Link to="/multi-player-mode">Multi Player Mode</Link>
           <button
-            onClick={async () => {
-              const response = await axiosInstance.post("api/v1/logout/", {});
-              console.log(response.data);
-              navigate("/");
-              Cookies.remove("accessToken");
-              setIsLoggedIn(false);
+            className="block md:hidden p-2"
+            onClick={() => {
+              setIsMenuOpen(!isMenuOpen);
             }}
           >
-            Logout
+            <img src="/hamburger-icon.svg" alt="menu-icon" />
           </button>
+          <div
+            className={`${
+              isMenuOpen ? "flex" : "hidden"
+            } md:flex flex-col md:flex-row items-start gap-3 p-2 *:cursor-pointer *:hover:text-black`}
+          >
+            <Link to="/profile">Profile</Link>
+            <Link to="/single-player-mode">Single Player Mode</Link>
+            <Link to="/multi-player-mode">Multi Player Mode</Link>
+            <button
+              onClick={async () => {
+                await axiosInstance.post("api/v1/logout/", {});
+                navigate("/");
+                Cookies.remove("accessToken");
+                setIsLoggedIn(false);
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </>
       ) : (
         <>
