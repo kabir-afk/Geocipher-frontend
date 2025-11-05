@@ -74,7 +74,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="h-auto overflow-auto border-2 rounded-md">
+        <div className="max-h-70 overflow-auto rounded-md scrollbar-hide">
           <table>
             <thead>
               <tr>
@@ -85,7 +85,7 @@ const Profile = () => {
               </tr>
             </thead>
             <tbody>
-              {score.map((game, gameIdx) => {
+              {score.reverse().map((game, gameIdx) => {
                 const rounds = game.rounds ?? [];
                 return rounds.map((round, roundIdx) => (
                   <tr key={`${gameIdx}-${roundIdx}`}>
