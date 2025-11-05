@@ -9,7 +9,7 @@ const Profile = () => {
       try {
         const response = await axiosInstance.get("api/v1/protected-view/");
         setData(response.data);
-        console.log("response : ", response.data);
+        // console.log("response : ", response.data);
       } catch (error) {
         console.error("Error fetching data : ", error.response.data.detail);
       }
@@ -40,11 +40,12 @@ const Profile = () => {
               <h1 className="font-bold text-2xl">{username}</h1>
               <p>Joined {date_joined}</p>
             </div>
-            <div className="text-right p-2 rounded-md bg-gray-500 h-fit">
+            <div className="text-right p-2 rounded-md bg-gray-500 h-fit flex gap-2">
+              <img src="/location.png" alt="level-icon" width={25} />
               <p className="font-bold">Level : {level}</p>
             </div>
           </div>
-          <div className="flex justify-between gap-4">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
             <div className="card">
               <h2>Total Games played</h2> <p>{score.length}</p>
             </div>
@@ -74,7 +75,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="max-h-70 overflow-auto rounded-md scrollbar-hide">
+        <div className="h-90 lg:max-h-70  overflow-auto rounded-md scrollbar-hide">
           <table>
             <thead>
               <tr>
