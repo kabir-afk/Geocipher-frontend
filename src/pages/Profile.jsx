@@ -29,7 +29,7 @@ const Profile = () => {
   } = data ?? {};
   return (
     <div className="bg-custom-gradient min-h-screen font-overpass text-white">
-      <div className="w-full relative left-1/2 transform -translate-x-1/2 top-5 flex flex-col justify-center items-center gap-3 font-bold">
+      <div className="w-full relative left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3 font-bold">
         <Navbar />
       </div>
 
