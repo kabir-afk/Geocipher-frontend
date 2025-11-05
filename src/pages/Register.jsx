@@ -28,9 +28,11 @@ const Register = () => {
     }
   };
   return (
-    <>
-      <Navbar />
-      <div className="bg-onyx rounded-md p-5 w-1/5 absolute top-1/2 left-1/2 -translate-1/2">
+    <div className="bg-custom-gradient min-h-screen font-overpass">
+      <div className="w-full relative left-1/2 transform -translate-x-1/2 top-5 flex flex-col justify-center items-center gap-3 font-bold">
+        <Navbar />
+      </div>
+      <div className="bg-onyx rounded-md p-5 w-[50%] md:w-1/3 lg:w-1/4 absolute top-1/2 left-1/2 -translate-1/2">
         <form className="flex flex-col" onSubmit={handleRegistration}>
           <input
             id="name"
@@ -76,11 +78,16 @@ const Register = () => {
             Register <i className="fa fa-fw fa-chevron-right"></i>
           </button>
         </form>
+        <div className="w-full flex items-center text-white uppercase text-xs my-3">
+          <div className="grow border-t border-gray-500"></div>
+          <span className="mx-2 text-gray-300">or</span>
+          <div className="grow border-t border-gray-500"></div>
+        </div>
         <div className="mt-5 rounded-md">
           <GoogleAuth />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

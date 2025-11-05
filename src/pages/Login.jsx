@@ -34,43 +34,52 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-onyx rounded-md p-5 w-1/5 absolute top-1/2 left-1/2 -translate-1/2">
-      <form className="flex flex-col" onSubmit={handleLogin}>
-        <input
-          id="name"
-          type="text"
-          placeholder="John Doe"
-          className="border-b border-cosmiclatte pb-1 mb-1 outline-none bg-transparent text-cosmiclatte text-sm font-light"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          id="password"
-          type="password"
-          placeholder="********"
-          className="border-b border-cosmiclatte pb-1 mb-1 outline-none bg-transparent text-cosmiclatte text-sm font-light"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    <div className="bg-custom-gradient min-h-screen font-overpass">
+      <div className="bg-onyx rounded-md p-5 w-[50%] md:w-1/3 lg:w-1/4 absolute top-1/2 left-1/2 -translate-1/2">
+        <form className="flex flex-col" onSubmit={handleLogin}>
+          <input
+            id="name"
+            type="text"
+            placeholder="John Doe"
+            className="border-b border-cosmiclatte pb-1 mb-1 outline-none bg-transparent text-cosmiclatte text-sm font-light"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            id="password"
+            type="password"
+            placeholder="********"
+            className="border-b border-cosmiclatte pb-1 mb-1 outline-none bg-transparent text-cosmiclatte text-sm font-light"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-cinnabar text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            Login <i className="fa fa-fw fa-chevron-right"></i>
+          </button>
+          <small>{error && <div className="text-red-400">{error}</div>}</small>
+        </form>
+
+        <div className="w-full flex items-center text-white uppercase text-xs my-3">
+          <div className="grow border-t border-gray-500"></div>
+          <span className="mx-2 text-gray-300">or</span>
+          <div className="grow border-t border-gray-500"></div>
+        </div>
+
+        <div className="rounded-md ">
+          <GoogleAuth />
+        </div>
         <button
-          type="submit"
-          className="bg-cinnabar text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
+          className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
+          onClick={() => {
+            navigate("/");
+          }}
         >
-          Login <i className="fa fa-fw fa-chevron-right"></i>
+          Create an account
         </button>
-        <small>{error && <div className="text-red-400">{error}</div>}</small>
-      </form>
-      <div className="mt-5 rounded-md">
-        <GoogleAuth />
       </div>
-      <button
-        className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Create an account
-      </button>
     </div>
   );
 };
