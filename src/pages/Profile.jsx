@@ -40,9 +40,8 @@ const Profile = () => {
               <h1 className="font-bold text-2xl">{username}</h1>
               <p>Joined {date_joined}</p>
             </div>
-            <div className="text-right">
+            <div className="text-right p-2 rounded-md bg-gray-500 h-fit">
               <p className="font-bold">Level : {level}</p>
-              {xp}/{xp_required} XP to next level
             </div>
           </div>
           <div className="flex justify-between gap-4">
@@ -57,6 +56,21 @@ const Profile = () => {
             </div>
             <div className="card">
               <h2>Min Distance</h2> <p>{min_distance} KM</p>
+            </div>
+          </div>
+          {/* Progres bar */}
+          <div>
+            <div className="flex justify-between py-2">
+              <p>Level Progress</p>
+              <p>
+                {xp}/{xp_required} XP to next level
+              </p>
+            </div>
+            <div className="w-full h-3 rounded-md bg-gray-400">
+              <div
+                className="h-3 bg-blue-600 rounded-md"
+                style={{ width: `${(xp / xp_required) * 100}%` }}
+              ></div>
             </div>
           </div>
         </div>
