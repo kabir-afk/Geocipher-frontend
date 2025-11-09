@@ -51,6 +51,15 @@
     scrollbar-width: none;
   }
 }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
 
 table {
   width: 100%;
