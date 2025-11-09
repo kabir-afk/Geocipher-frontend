@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
         console.log(refreshError);
         Cookies.remove("accessToken");
         await axiosInstance.post("api/v1/logout/", {});
-        window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }
