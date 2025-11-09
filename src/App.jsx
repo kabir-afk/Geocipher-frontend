@@ -50,32 +50,33 @@ function App() {
   useEffect(() => {
     async function fetchCoordinates() {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/v1/");
-        setCoords(response.data.coordinates);
+        const response = await axios.get(
+          "http://localhost:8000/api/v1/"
+          // "https://geoguesser-clone-backend.onrender.com/api/v1/"
+          // "https://geoguesser-clone-backend-production.up.railway.app/api/v1/"
+        );
+        setCoords(response.data);
       } catch (error) {
         console.error("Error fetching coordinates", error);
       }
     }
     fetchCoordinates();
-  }, []);
+  }, [round]);
 
   useEffect(() => {
-    if (coords.length > 0) {
-      let randomPosition = coords[Math.floor(Math.random() * coords.length)];
-      randomPosition = { lat: +randomPosition.lat, lng: +randomPosition.lng };
-      if (window.innerWidth < 768) {
-        setIsMobile(true);
-      }
-      setRandomPosition(randomPosition);
-      setTimerState(true);
-      async function fetchGameId() {
-        if (round == 1) {
-          const response = await axiosInstance.post("api/v1/game-id");
-          setGameId(response.data.id);
-        }
-      }
-      fetchGameId();
+    let randomPosition = { lat: +coords.lat, lng: +coords.lng };
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
     }
+    setRandomPosition(randomPosition);
+    setTimerState(true);
+    async function fetchGameId() {
+      if (round == 1) {
+        const response = await axiosInstance.post("api/v1/game-id");
+        setGameId(response.data.id);
+      }
+    }
+    fetchGameId();
   }, [round, coords]);
 
   const handleTimeFinish = () => {
