@@ -33,7 +33,7 @@ const Profile = () => {
         <Navbar />
       </div>
 
-      <div className="w-[85%] relative top-10 left-1/2 transform -translate-x-1/2 text-center flex flex-col gap-3">
+      <div className="w-full px-[7.5%] text-center flex flex-col gap-3">
         <div>
           <div className="flex justify-between p-4">
             <div className="text-left">
@@ -41,7 +41,9 @@ const Profile = () => {
               <p>Joined {date_joined}</p>
             </div>
             <div className="text-right p-2 rounded-md bg-gray-500 h-fit flex gap-2">
-              <img src="/location.png" alt="level-icon" width={25} />
+              <div className="w-5">
+                <img src="/location.png" alt="level-icon" />
+              </div>
               <p className="font-bold">Level : {level}</p>
             </div>
           </div>
@@ -76,7 +78,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="h-90 lg:max-h-70  overflow-auto rounded-md scrollbar-hide">
-          <table>
+          <table className="w-full">
             <thead>
               <tr>
                 <th>Date</th>
