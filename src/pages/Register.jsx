@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../components/GoogleAuth";
 import Navbar from "../components/Navbar";
+import Cookies from "js-cookie";
 import { AuthContext } from "../components/AuthContext";
 import axiosInstance from "../axiosinstance";
 
@@ -15,11 +16,12 @@ const Register = () => {
   const handleRegistration = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("api/v1/auth/", {
+      const response = await axiosInstance.post("api/v1/auth/", {
         username,
         email,
         password,
       });
+      Cookies.set("accessToken", response.data.access);
       setIsLoggedIn(true);
       navigate("/single-player-mode");
     } catch (error) {
