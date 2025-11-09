@@ -30,7 +30,6 @@ function App() {
   const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [isToggleBtn, setIsToggleBtn] = useState(true);
   const [round, setRound] = useState(1);
@@ -39,7 +38,8 @@ function App() {
   const [gameMarkerRef, _gameMarker] = useAdvancedMarkerRef();
   const navigate = useNavigate();
   const layoutClassMap = {
-    collapsed: "h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
+    collapsed:
+      "invisible md:visible h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
   };
 
@@ -47,13 +47,14 @@ function App() {
     ? layoutClassMap.expanded
     : layoutClassMap.collapsed;
 
+  const toggleBtnVis = isToggleBtn ? "visible" : "invisible";
+
   useEffect(() => {
     async function fetchCoordinates() {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/v1/"
           // "https://geoguesser-clone-backend.onrender.com/api/v1/"
-          // "https://geoguesser-clone-backend-production.up.railway.app/api/v1/"
         );
         setCoords(response.data);
       } catch (error) {
@@ -65,9 +66,6 @@ function App() {
 
   useEffect(() => {
     let randomPosition = { lat: +coords.lat, lng: +coords.lng };
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    }
     setRandomPosition(randomPosition);
     setTimerState(true);
     async function fetchGameId() {
@@ -83,6 +81,7 @@ function App() {
     setVisibility(true);
     setLayout(true);
     setTimerState(false);
+    setIsToggleBtn(false);
   };
 
   function stateChange() {
@@ -90,8 +89,6 @@ function App() {
       setVisibility(true);
       setLayout(true);
       setTimerState(false);
-    }
-    if (isMobile) {
       setIsToggleBtn(false);
     }
   }
@@ -109,64 +106,60 @@ function App() {
     setMarkerPosition(null);
     setCursor(true);
     setTimerState(true);
-    if (isMobile) {
-      setShowMap(false);
-      setIsToggleBtn(true);
-    }
+    setIsToggleBtn(true);
+    setShowMap(false);
   };
 
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="h-full font-overpass font-bold">
-        {(!isMobile || showMap) && (
-          <div
-            className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
+        <div
+          className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
+        >
+          <Map
+            key={round}
+            defaultCenter={defaultPosition}
+            defaultZoom={2}
+            mapId="MAP_ID"
+            disableDefaultUI
+            onClick={(e) => {
+              visibility
+                ? e.preventDefault()
+                : setMarkerPosition({
+                    lat: e.detail.latLng.lat,
+                    lng: e.detail.latLng.lng,
+                  });
+              setCursor(false);
+            }}
           >
-            <Map
-              key={round}
-              defaultCenter={defaultPosition}
-              defaultZoom={2}
-              mapId="MAP_ID"
-              disableDefaultUI
-              onClick={(e) => {
-                visibility
-                  ? e.preventDefault()
-                  : setMarkerPosition({
-                      lat: e.detail.latLng.lat,
-                      lng: e.detail.latLng.lng,
-                    });
-                setCursor(false);
-              }}
-            >
-              {visibility && (
-                <>
-                  <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
-                    <Pin
-                      background={"#000"}
-                      glyphText={"🏳️"}
-                      borderColor={"#000"}
-                    />
-                  </AdvancedMarker>
-
-                  <Polyline
-                    path={[randomPosition, markerPosition]}
-                    strokeOpacity={0}
-                    strokeWeight={2}
-                    strokeColor={"#000"}
-                    icons={[
-                      {
-                        icon: lineSymbol,
-                        offset: "0",
-                        repeat: "10px",
-                      },
-                    ]}
+            {visibility && (
+              <>
+                <AdvancedMarker ref={gameMarkerRef} position={randomPosition}>
+                  <Pin
+                    background={"#000"}
+                    glyphText={"🏳️"}
+                    borderColor={"#000"}
                   />
-                </>
-              )}
-              <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
-            </Map>
-          </div>
-        )}
+                </AdvancedMarker>
+
+                <Polyline
+                  path={[randomPosition, markerPosition]}
+                  strokeOpacity={0}
+                  strokeWeight={2}
+                  strokeColor={"#000"}
+                  icons={[
+                    {
+                      icon: lineSymbol,
+                      offset: "0",
+                      repeat: "10px",
+                    },
+                  ]}
+                />
+              </>
+            )}
+            <AdvancedMarker ref={userMarkerRef} position={markerPosition} />
+          </Map>
+        </div>
 
         <div className="w-full absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center gap-2 xl:not-last:justify-end">
           {visibility && (
@@ -179,26 +172,23 @@ function App() {
               />
             </div>
           )}
-          {isMobile && isToggleBtn && (
-            <button
-              className="fixed bottom-10 right-2 p-3 rounded-full text-center bg-blue-500 text-amber-50 cursor-pointer uppercase"
-              onClick={() => {
-                setShowMap(!showMap);
-                setLayout(!layout);
-              }}
-            >
-              <img src="/image.png" alt="map-icon" width={40} height={40} />
-            </button>
-          )}
+          <button
+            className={`${toggleBtnVis} fixed bottom-10 right-2 p-3 rounded-full text-center bg-blue-500 text-amber-50 cursor-pointer uppercase md:hidden`}
+            onClick={() => {
+              setShowMap(!showMap);
+              setLayout(!layout);
+            }}
+          >
+            <img src="/image.png" alt="map-icon" width={40} height={40} />
+          </button>
           {visibility === false ? (
-            (!isMobile || (isMobile && showMap)) && (
-              <GuessButton
-                position={randomPosition}
-                stateChange={stateChange}
-                cursor={cursor}
-                cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
-              />
-            )
+            <GuessButton
+              position={randomPosition}
+              stateChange={stateChange}
+              cursor={cursor}
+              cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
+              mapState={showMap}
+            />
           ) : (
             <div className="py-1 w-80 rounded-md text-center bg-green-500 text-amber-50 lg-button-pos">
               {round === 3 ? (
