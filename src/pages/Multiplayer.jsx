@@ -31,7 +31,6 @@ const Multiplayer = () => {
   const [layout, setLayout] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const [timerState, setTimerState] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [isToggleBtn, setIsToggleBtn] = useState(true);
   const [round, setRound] = useState(1);
@@ -45,13 +44,16 @@ const Multiplayer = () => {
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const layoutClassMap = {
-    collapsed: "h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
+    collapsed:
+      "invisible md:visible h-48 w-80 bottom-12 m-2 hover:w-1/3 hover:h-1/2",
     expanded: "h-full w-full bottom-0 m-0",
   };
 
   const containerClass = layout
     ? layoutClassMap.expanded
     : layoutClassMap.collapsed;
+
+  const toggleBtnVis = isToggleBtn ? "visible" : "invisible";
 
   const lineSymbol = {
     path: "M 0,-1 0,1",
@@ -63,6 +65,7 @@ const Multiplayer = () => {
     setVisibility(true);
     setLayout(true);
     setTimerState(false);
+    setIsToggleBtn(false);
 
     send({
       event: "guess",
@@ -82,24 +85,23 @@ const Multiplayer = () => {
     setGuesses([]);
     setGuessReceived(false);
     setAllGuessesReceived(false);
-    if (isMobile) {
-      setShowMap(false);
-      setIsToggleBtn(true);
-    }
+    setShowMap(false);
+    setIsToggleBtn(true);
     send({
       event: "ready",
     });
   };
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    }
-
     const websocketProtocol =
       window.location.protocol === "https:" ? "wss" : "ws";
+    const baseHost =
+      window.location.protocol === "https:"
+        ? "geoguesser-clone-backend.onrender.com/"
+        : "localhost:8000/ws/";
     const accessToken = Cookies.get("accessToken");
-    const wsEndpoint = `${websocketProtocol}://localhost:8000/ws/?token=${accessToken}`;
+    // const wsEndpoint = `wss://geoguesser-clone-backend.onrender.com/ws/?token=${accessToken}`;
+    const wsEndpoint = `${websocketProtocol}://${baseHost}?token=${accessToken}`;
     const socket = new WebSocket(wsEndpoint);
 
     socket.onmessage = function (event) {
@@ -111,9 +113,7 @@ const Multiplayer = () => {
       } else if (data.event === "guess_received") {
         setGuessReceived(true);
         setSocketMsg(data.message);
-        if (isMobile) {
-          setIsToggleBtn(false);
-        }
+        setIsToggleBtn(false);
       } else if (data.event === "results_ready") {
         setAllGuessesReceived(true);
         const list = Object.entries(data.guesses)
@@ -169,9 +169,7 @@ const Multiplayer = () => {
       user_location: markerPosition,
       actual_location: randomPosition,
     });
-    if (isMobile) {
-      setIsToggleBtn(false);
-    }
+    setIsToggleBtn(false);
   }
 
   return (
@@ -181,71 +179,70 @@ const Multiplayer = () => {
       ) : (
         <APIProvider apiKey={API_KEY}>
           <div className="h-full font-overpass font-bold">
-            {(!isMobile || showMap) && (
-              <div
-                className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
+            <div
+              className={`rounded-md overflow-hidden absolute z-10 right-0 bg-transparent backdrop-blur-3xl transition duration-50 ease ${containerClass}`}
+            >
+              <Map
+                key={round}
+                defaultCenter={defaultPosition}
+                defaultZoom={2}
+                mapId="MAP_ID"
+                disableDefaultUI
+                onClick={(e) => {
+                  visibility
+                    ? e.preventDefault()
+                    : setMarkerPosition({
+                        lat: e.detail.latLng.lat,
+                        lng: e.detail.latLng.lng,
+                      });
+                  setCursor(false);
+                }}
               >
-                <Map
-                  key={round}
-                  defaultCenter={defaultPosition}
-                  defaultZoom={2}
-                  mapId="MAP_ID"
-                  disableDefaultUI
-                  onClick={(e) => {
-                    visibility
-                      ? e.preventDefault()
-                      : setMarkerPosition({
-                          lat: e.detail.latLng.lat,
-                          lng: e.detail.latLng.lng,
-                        });
-                    setCursor(false);
-                  }}
-                >
-                  {visibility && (
-                    <>
-                      <AdvancedMarker
-                        ref={gameMarkerRef}
-                        position={randomPosition}
-                      >
-                        <Pin
-                          background={"#000"}
-                          glyphText={"🏳️"}
-                          borderColor={"#000"}
-                        />
-                      </AdvancedMarker>
-                    </>
-                  )}
-                  {allGuessesReceived === false ? (
+                {visibility && (
+                  <>
                     <AdvancedMarker
-                      ref={userMarkerRef}
-                      position={markerPosition}
-                    />
-                  ) : (
-                    guesses.map((guess, index) => {
-                      const markerId = `marker-${index}`;
-                      return (
-                        <React.Fragment key={markerId}>
-                          <Polyline
-                            path={[randomPosition, guess.pos]}
-                            strokeOpacity={0}
-                            strokeWeight={2}
-                            strokeColor={"#000"}
-                            icons={[
-                              {
-                                icon: lineSymbol,
-                                offset: "0",
-                                repeat: "10px",
-                              },
-                            ]}
-                          />
-                          <CustomAdvancedMarker guess={guess} />
-                        </React.Fragment>
-                      );
-                    })
-                  )}
-                </Map>
-              </div>
-            )}
+                      ref={gameMarkerRef}
+                      position={randomPosition}
+                    >
+                      <Pin
+                        background={"#000"}
+                        glyphText={"🏳️"}
+                        borderColor={"#000"}
+                      />
+                    </AdvancedMarker>
+                  </>
+                )}
+                {allGuessesReceived === false ? (
+                  <AdvancedMarker
+                    ref={userMarkerRef}
+                    position={markerPosition}
+                  />
+                ) : (
+                  guesses.map((guess, index) => {
+                    const markerId = `marker-${index}`;
+                    return (
+                      <React.Fragment key={markerId}>
+                        <Polyline
+                          path={[randomPosition, guess.pos]}
+                          strokeOpacity={0}
+                          strokeWeight={2}
+                          strokeColor={"#000"}
+                          icons={[
+                            {
+                              icon: lineSymbol,
+                              offset: "0",
+                              repeat: "10px",
+                            },
+                          ]}
+                        />
+                        <CustomAdvancedMarker guess={guess} />
+                      </React.Fragment>
+                    );
+                  })
+                )}
+              </Map>
+            </div>
+
             <div className="w-full absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center gap-2 xl:not-last:justify-end">
               {visibility && (
                 <div>
@@ -258,28 +255,23 @@ const Multiplayer = () => {
                   />
                 </div>
               )}
-              {isMobile && isToggleBtn && (
-                <button
-                  className="fixed bottom-10 right-2 p-3 rounded-full text-center bg-blue-500 text-amber-50 cursor-pointer uppercase"
-                  onClick={() => {
-                    setShowMap(!showMap);
-                    setLayout(!layout);
-                  }}
-                >
-                  <img src="/image.png" alt="map-icon" width={40} height={40} />
-                </button>
-              )}
+              <button
+                className={`${toggleBtnVis} fixed bottom-10 right-2 p-3 rounded-full text-center bg-blue-500 text-amber-50 cursor-pointer uppercase md:hidden`}
+                onClick={() => {
+                  setShowMap(!showMap);
+                  setLayout(!layout);
+                }}
+              >
+                <img src="/image.png" alt="map-icon" width={40} height={40} />
+              </button>
               {guessReceived === false && allGuessesReceived === false ? (
-                (!isMobile || (isMobile && showMap)) && (
-                  <GuessButton
-                    position={randomPosition}
-                    sendGuess={sendGuess}
-                    cursor={cursor}
-                    cursorStyle={
-                      cursor ? "cursor-not-allowed" : "cursor-pointer"
-                    }
-                  />
-                )
+                <GuessButton
+                  position={randomPosition}
+                  sendGuess={sendGuess}
+                  cursor={cursor}
+                  cursorStyle={cursor ? "cursor-not-allowed" : "cursor-pointer"}
+                  mapState={showMap}
+                />
               ) : guessReceived === true && allGuessesReceived === false ? (
                 <Waiting message={socketMsg} />
               ) : (
