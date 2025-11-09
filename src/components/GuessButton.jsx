@@ -6,6 +6,7 @@ export function GuessButton({
   stateChange,
   cursor,
   cursorStyle,
+  mapState,
 }) {
   const map = useMap();
   function zoomOutAndIn(event) {
@@ -38,11 +39,12 @@ export function GuessButton({
       zoomOutAndIn(event);
     } else if (sendGuess) sendGuess();
   }
+  const btnVis = mapState ? "visible" : "invisible";
   return (
     <button
       type="submit"
       disabled={cursor}
-      className={`w-80 h-full ${cursorStyle} uppercase py-1 rounded-md text-center bg-green-500 text-amber-50 ml-auto mr-2`}
+      className={`${btnVis} md:visible w-80 h-full ${cursorStyle} uppercase py-1 rounded-md text-center bg-green-500 text-amber-50 ml-auto mr-2`}
       onClick={panToPosition}
     >
       guess
