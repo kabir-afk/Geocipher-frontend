@@ -6,7 +6,7 @@ const PublicRoute = ({ children }) => {
   const { isLoggedIn } = useContext(AuthContext);
 
   if (!isLoggedIn) return children;
-  return <Navigate to="/profile" replace />;
+  return <Navigate to="/single-player-mode" replace />;
 };
 
 export default PublicRoute;
