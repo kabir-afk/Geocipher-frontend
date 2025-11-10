@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Cookies from "js-cookie";
 import { AuthContext } from "../components/AuthContext";
 import axiosInstance from "../axiosinstance";
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -29,8 +30,13 @@ const Register = () => {
       setErrors(error.response.data);
     }
   };
+  const handleError = (errorData) => {
+    const errorMsg = Object.values(errorData)[0];
+    toast.error(errorMsg);
+  };
   return (
     <div className="bg-custom-gradient min-h-screen font-overpass">
+      <Toaster />
       <div className="w-full absolute z-10 left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3">
         <Navbar />
       </div>
@@ -86,7 +92,7 @@ const Register = () => {
           <div className="grow border-t border-gray-500"></div>
         </div>
         <div className="mt-5 rounded-md">
-          <GoogleAuth />
+          <GoogleAuth onError={handleError} />
         </div>
       </div>
     </div>

@@ -100,8 +100,8 @@ const Multiplayer = () => {
         ? "geoguesser-clone-backend.onrender.com/"
         : "localhost:8000/ws/";
     const accessToken = Cookies.get("accessToken");
-    // const wsEndpoint = `wss://geoguesser-clone-backend.onrender.com/ws/?token=${accessToken}`;
-    const wsEndpoint = `${websocketProtocol}://${baseHost}?token=${accessToken}`;
+    const wsEndpoint = `wss://geoguesser-clone-backend.onrender.com/ws/?token=${accessToken}`;
+    // const wsEndpoint = `${websocketProtocol}://${baseHost}?token=${accessToken}`;
     const socket = new WebSocket(wsEndpoint);
 
     socket.onmessage = function (event) {

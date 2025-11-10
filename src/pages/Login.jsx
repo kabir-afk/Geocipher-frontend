@@ -4,6 +4,7 @@ import { AuthContext } from "../components/AuthContext";
 import Cookies from "js-cookie";
 import axiosInstance from "../axiosinstance";
 import GoogleAuth from "../components/GoogleAuth";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,8 +34,14 @@ const Login = () => {
     }
   };
 
+  const handleError = (errorData) => {
+    const errorMsg = Object.values(errorData)[0];
+    toast.error(errorMsg);
+  };
+
   return (
     <div className="bg-custom-gradient min-h-screen font-overpass">
+      <Toaster />
       <div className="bg-onyx rounded-md p-5 w-[50%] md:w-1/3 lg:w-1/4 absolute top-1/2 left-1/2 -translate-1/2">
         <form className="flex flex-col" onSubmit={handleLogin}>
           <input
@@ -69,7 +76,7 @@ const Login = () => {
         </div>
 
         <div className="rounded-md ">
-          <GoogleAuth />
+          <GoogleAuth onError={handleError} />
         </div>
         <button
           className="text-white rounded-md text-sm font-medium uppercase py-2 px-3 mt-5 hover:scale-105 active:scale-95 cursor-pointer"

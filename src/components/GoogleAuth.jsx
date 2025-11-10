@@ -4,7 +4,7 @@ import axiosInstance from "../axiosinstance";
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 
-const GoogleAuth = () => {
+const GoogleAuth = ({ onError }) => {
   const navigate = useNavigate();
   const { setIsLoggedIn } = useContext(AuthContext);
   async function sendCredentials(credentialResponse) {
@@ -13,6 +13,7 @@ const GoogleAuth = () => {
       setIsLoggedIn(true);
       navigate("/single-player-mode");
     } catch (error) {
+      onError(error.response.data);
       console.error(error.response.data);
     }
   }
@@ -21,10 +22,9 @@ const GoogleAuth = () => {
       <GoogleLogin
         onSuccess={(credentialResponse) => {
           sendCredentials(credentialResponse);
-          console.log(credentialResponse);
         }}
         onError={() => {
-          console.log("Login Failed");
+          onError("Google Login Failed");
         }}
       />
     </div>
