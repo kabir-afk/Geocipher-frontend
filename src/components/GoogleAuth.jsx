@@ -9,11 +9,7 @@ const GoogleAuth = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
   async function sendCredentials(credentialResponse) {
     try {
-      const res = await axiosInstance.post(
-        "api/v1/auth/google",
-        credentialResponse
-      );
-      console.log(res);
+      await axiosInstance.post("api/v1/auth/google", credentialResponse);
       setIsLoggedIn(true);
       navigate("/single-player-mode");
     } catch (error) {
