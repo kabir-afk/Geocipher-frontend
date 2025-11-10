@@ -22,6 +22,11 @@ import Navbar from "../components/Navbar";
 import { CustomAdvancedMarker } from "../components/CustomAdvancedMarker";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT;
+const WS_URL =
+  ENVIRONMENT === "development"
+    ? "ws://localhost:8000/ws/"
+    : import.meta.env.VITE_WS_BASEURL;
 
 const Multiplayer = () => {
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
@@ -93,15 +98,8 @@ const Multiplayer = () => {
   };
 
   useEffect(() => {
-    const websocketProtocol =
-      window.location.protocol === "https:" ? "wss" : "ws";
-    const baseHost =
-      window.location.protocol === "https:"
-        ? "geoguesser-clone-backend.onrender.com/"
-        : "localhost:8000/ws/";
     const accessToken = Cookies.get("accessToken");
-    const wsEndpoint = `wss://geoguesser-clone-backend.onrender.com/ws/?token=${accessToken}`;
-    // const wsEndpoint = `${websocketProtocol}://${baseHost}?token=${accessToken}`;
+    const wsEndpoint = `${WS_URL}?token=${accessToken}`;
     const socket = new WebSocket(wsEndpoint);
 
     socket.onmessage = function (event) {

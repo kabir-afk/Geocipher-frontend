@@ -20,6 +20,12 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "./axiosinstance";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT;
+const SERVER_URL = import.meta.env.VITE_SERVER_BASEURL;
+const coordinateEndPoint =
+  ENVIRONMENT === "development"
+    ? "http://localhost:8000/api/v1/"
+    : `${SERVER_URL}/api/v1/`;
 
 function App() {
   const defaultPosition = { lat: 19.076, lng: 72.8777 };
@@ -52,10 +58,7 @@ function App() {
   useEffect(() => {
     async function startNewGame() {
       try {
-        const coordResponse = await axios.get(
-          "http://localhost:8000/api/v1/"
-          // "https://geoguesser-clone-backend.onrender.com/api/v1/"
-        );
+        const coordResponse = await axios.get(coordinateEndPoint);
         setCoords(coordResponse.data);
         const gameIdResponse = await axiosInstance.post("api/v1/game-id");
         setGameId(gameIdResponse.data.id);

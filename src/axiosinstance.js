@@ -1,8 +1,12 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT;
+const SERVER_URL = import.meta.env.VITE_SERVER_BASEURL;
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_BASEURL,
+  baseURL:
+    ENVIRONMENT === "development" ? "http://localhost:8000/" : SERVER_URL,
   headers: {
     "Content-Type": "application/json",
   },
