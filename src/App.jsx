@@ -50,31 +50,32 @@ function App() {
   const toggleBtnVis = isToggleBtn ? "visible" : "invisible";
 
   useEffect(() => {
-    async function fetchCoordinates() {
+    async function startNewGame() {
       try {
-        const response = await axios.get(
+        const coordResponse = await axios.get(
           "http://localhost:8000/api/v1/"
           // "https://geoguesser-clone-backend.onrender.com/api/v1/"
         );
-        setCoords(response.data);
+        setCoords(coordResponse.data);
+        const gameIdResponse = await axiosInstance.post("api/v1/game-id");
+        setGameId(gameIdResponse.data.id);
+        let pos = coords[0];
+        setRandomPosition({ lat: +pos.lat, lng: +pos.lng });
+        setTimerState(true);
       } catch (error) {
         console.error("Error fetching coordinates", error);
       }
     }
-    fetchCoordinates();
-  }, [round]);
+    startNewGame();
+  }, []);
 
   useEffect(() => {
-    let randomPosition = { lat: +coords.lat, lng: +coords.lng };
-    setRandomPosition(randomPosition);
-    setTimerState(true);
-    async function fetchGameId() {
-      if (round == 1) {
-        const response = await axiosInstance.post("api/v1/game-id");
-        setGameId(response.data.id);
-      }
+    if (coords.length > 0 && round > 0) {
+      const pos = coords[round - 1];
+      const newPosition = { lat: +pos.lat, lng: +pos.lng };
+      setRandomPosition(newPosition);
+      setTimerState(true);
     }
-    fetchGameId();
   }, [round, coords]);
 
   const handleTimeFinish = () => {
