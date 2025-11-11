@@ -28,9 +28,15 @@ const GoogleAuth = ({ onError }) => {
     },
   });
   return (
-    <div className="border-2 w-full ">
-      <button onClick={() => login()} className="cursor-pointer">
-        Sign in with Google
+    <div className="w-full bg-white font-overpass rounded-md">
+      <button
+        onClick={() => login()}
+        className="cursor-pointer w-full flex items-center justify-center gap-2 py-2"
+      >
+        <img src="/google.png" alt="google-icon" className="w-5 h-5" />
+        <span className="text-sm font-medium text-gray-700">
+          Sign in with Google
+        </span>
       </button>
     </div>
   );
