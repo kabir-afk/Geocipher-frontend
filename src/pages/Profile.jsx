@@ -29,11 +29,14 @@ const Profile = () => {
   } = data ?? {};
   return (
     <div className="bg-custom-gradient min-h-screen font-overpass text-white">
-      <div className="w-full relative left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3 font-bold">
+      <div className="w-full md:w-[85%] relative left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3 font-bold">
+        <div className="absolute z-10 left-1/2 transform -translate-x-1/2  md:left-0 md:translate-x-0 top-1 w-36">
+          <img src="geocipher.png" alt="geocipher-logo" />
+        </div>
         <Navbar />
       </div>
 
-      <div className="w-full px-[7.5%] text-center flex flex-col gap-3">
+      <div className="w-full pt-4 px-[7.5%] text-center flex flex-col gap-3">
         <div>
           <div className="flex justify-between p-4">
             <div className="text-left">

@@ -299,6 +299,9 @@ const Multiplayer = () => {
                 </div>
               )}
             </div>
+            <div className="absolute z-10 left-1/2 transform -translate-x-1/2  md:left-0 md:translate-x-0 top-1 md:top-5 w-36 md:w-40">
+              <img src="geocipher.png" alt="geocipher-logo" />
+            </div>
             <div className="w-full absolute z-10 left-1/2 transform -translate-x-1/2 md:top-5 flex flex-col justify-center items-center gap-3">
               <Navbar />
               <Timer timerState={timerState} onTimeFinish={handleTimeFinish} />
