@@ -1,4 +1,4 @@
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosinstance";
 import { useContext } from "react";
@@ -13,20 +13,25 @@ const GoogleAuth = ({ onError }) => {
       setIsLoggedIn(true);
       navigate("/single-player-mode");
     } catch (error) {
-      onError(error.response.data);
-      console.error(error.response.data);
+      onError(error.response?.data || "Something went wrong");
+      console.error(error);
     }
   }
+  const login = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: (credentialResponse) => {
+      sendCredentials(credentialResponse);
+    },
+    onError: (err) => {
+      onError("Google login failed");
+      console.error(err);
+    },
+  });
   return (
-    <div className="w-full ">
-      <GoogleLogin
-        onSuccess={(credentialResponse) => {
-          sendCredentials(credentialResponse);
-        }}
-        onError={() => {
-          onError("Google Login Failed");
-        }}
-      />
+    <div className="border-2 w-full ">
+      <button onClick={() => login()} className="cursor-pointer">
+        Sign in with Google
+      </button>
     </div>
   );
 };
