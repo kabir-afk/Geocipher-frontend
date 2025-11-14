@@ -120,3 +120,7 @@ This frontend expects a backend that provides:
 - A WebSocket endpoint for multiplayer at the `VITE_WS_BASEURL` address
 
 For local development the axios instance falls back to `http://localhost:8000/` when `VITE_ENVIRONMENT` is `development`.
+
+---
+
+**Built with ❤️**
